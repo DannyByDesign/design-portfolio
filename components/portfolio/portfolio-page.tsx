@@ -282,29 +282,33 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
   return (
     <motion.section
       id="home"
-      className="scroll-mt-24 min-h-[calc(100vh-64px)] pt-[96px] pb-10 md:pt-[120px] md:pb-14"
+      className="scroll-mt-24 flex min-h-[calc(100vh-64px)] flex-col items-center pt-[96px] pb-10 text-center md:pt-[120px] md:pb-14"
       variants={heroContainerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.h1
-        className="font-serif text-[44px] leading-[1] font-semibold tracking-[-0.03em] text-black/95 md:text-[64px] md:leading-[0.95]"
-        variants={heroItemVariants}
-      >
-        designer
-      </motion.h1>
+      <div className="flex flex-col items-center">
+        <motion.h1
+          className="font-serif text-[44px] leading-[1] font-semibold tracking-[-0.03em] text-black/95 md:text-[64px] md:leading-[0.95]"
+          variants={heroItemVariants}
+        >
+          designer
+        </motion.h1>
+        <motion.p className="mt-[10px] text-[14px] tracking-normal text-black/50" variants={heroItemVariants}>
+          /dəˈzīnər/
+        </motion.p>
+      </div>
 
-      <motion.div variants={heroItemVariants}>
-        <p className="mt-[10px] text-[14px] tracking-normal text-black/50">/dəˈzīnər/</p>
-        <p className="mt-[28px] text-[12px] uppercase tracking-[0.22em] text-black/55">
+      <motion.div className="mt-[28px]" variants={heroItemVariants}>
+        <p className="text-[12px] uppercase tracking-[0.22em] text-black/55">
           ENTRY NO. 01 · NOUN · /DANNY WANG/
         </p>
       </motion.div>
 
-      <div className="mt-10">
+      <div className="mt-10 w-full max-w-[820px]">
         <div className="h-px w-full bg-black/10" />
         <motion.ol
-          className="space-y-[24px] pb-8 pt-8 md:space-y-[26px] md:pb-10 md:pt-9"
+          className="mx-auto max-w-[760px] space-y-[24px] pb-8 pt-8 md:space-y-[26px] md:pb-10 md:pt-9"
           variants={senseListVariants}
           initial="hidden"
           animate="visible"
@@ -312,17 +316,15 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
           {heroDefinitionSenses.map((sense) => (
             <motion.li
               key={sense.index}
-              className="grid grid-cols-[22px_minmax(0,1fr)] items-start gap-x-[18px] md:grid-cols-[28px_minmax(0,1fr)] md:gap-x-[20px]"
+              className="mx-auto max-w-[66ch]"
               variants={senseRowVariants}
             >
-              <span className="pt-[0.35em] text-left text-[12px] font-medium tracking-[0.08em] text-black/40 md:text-[13px]">
-                {sense.index}
-              </span>
-              <div className="max-w-[66ch]">
-                <p className="text-[16px] leading-[1.65] font-normal text-black/80 md:text-[17px]">
-                  {sense.text}
-                </p>
-              </div>
+              <p className="text-center text-[16px] leading-[1.65] font-normal text-black/55 md:text-[17px]">
+                <span className="mr-3 inline-block font-normal tracking-[0.08em] md:mr-4">
+                  {sense.index}
+                </span>
+                {sense.text}
+              </p>
             </motion.li>
           ))}
         </motion.ol>
@@ -379,7 +381,7 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
         industrial design
       </motion.h2>
       <motion.p
-        className="mt-4 max-w-[56ch] text-[16px] leading-[1.58] text-black/55"
+        className="mt-4 max-w-[56ch] px-1 py-1 text-[16px] leading-[1.58] text-black/55"
         variants={introVariants}
       >
         I work on both conceptual projects that introduce bold ideas and sketch-to-shelf projects
@@ -387,7 +389,7 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
       </motion.p>
 
       <motion.div
-        className="mt-9 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3"
+        className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3"
         variants={cardGridVariants}
       >
         {industrialProjects.map((project) => (
@@ -395,7 +397,7 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
             <Card className="group relative overflow-hidden rounded-none border-black/10 bg-white p-0">
               <div
                 className={cn(
-                  "relative aspect-[1/1] overflow-hidden bg-gradient-to-b md:aspect-[5/4]",
+                  "relative aspect-[1/1] overflow-hidden bg-gradient-to-b",
                   project.tone,
                 )}
               >
@@ -404,14 +406,14 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
                   alt={project.image.alt}
                   fill
                   sizes="(min-width: 1024px) 280px, (min-width: 768px) 45vw, 100vw"
-                  className="object-contain p-8 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:scale-[1.06]"
+                  className="object-contain p-10 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:p-11 md:group-hover:scale-[1.06]"
                 />
                 <div className="absolute inset-0 bg-black/5 transition-colors duration-500 md:group-hover:bg-black/45" />
-                <div className="absolute inset-x-0 bottom-0 p-4 text-white opacity-100 transition-all duration-500 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white opacity-100 transition-all duration-500 md:translate-y-2 md:p-6 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
                   <p className="text-[15px] leading-tight font-medium tracking-[-0.01em]">
                     {project.title}
                   </p>
-                  <p className="mt-1 text-[13px] leading-[1.45] text-white/86">
+                  <p className="mt-1.5 text-[13px] leading-[1.45] text-white/86">
                     {project.subtitle}
                   </p>
                 </div>
@@ -585,7 +587,7 @@ export function PortfolioPage() {
     <div className="bg-white text-black">
       <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
 
-      <main className="mx-auto flex w-full max-w-[880px] flex-col gap-[56px] px-6 pb-24 md:gap-[72px] md:px-8 lg:gap-[88px]">
+      <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-[56px] px-6 pb-24 md:gap-[72px] md:px-8 lg:gap-[88px]">
         <HeroDefinition prefersReducedMotion={prefersReducedMotion} />
         <IndustrialDesignSection prefersReducedMotion={prefersReducedMotion} />
 
