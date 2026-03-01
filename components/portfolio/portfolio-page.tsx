@@ -363,7 +363,7 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
   return (
     <motion.section
       id="industrial-design"
-      className="scroll-mt-24 pt-2 md:pt-4"
+      className="scroll-mt-24 pt-8 md:pt-12"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.24 }}
@@ -447,7 +447,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
   return (
     <motion.section
       id="contact"
-      className="scroll-mt-24 pb-4"
+      className="scroll-mt-24 pt-8 pb-4 md:pt-12"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -555,17 +555,31 @@ export function PortfolioPage() {
       return;
     }
 
+    const sectionRatios = new Map<PortfolioSection, number>();
+
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+        entries.forEach((entry) => {
+          const section = entry.target.id as PortfolioSection;
+          if (entry.isIntersecting) {
+            sectionRatios.set(section, entry.intersectionRatio);
+            return;
+          }
+          sectionRatios.delete(section);
+        });
 
-        if (!visible) {
+        const nextVisible = [...sectionRatios.entries()].sort((a, b) => b[1] - a[1])[0];
+
+        if (!nextVisible) {
           return;
         }
 
-        const section = visible.target.id as PortfolioSection;
+        let [section] = nextVisible;
+
+        // Ensure the last section can become active near page bottom.
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+          section = "contact";
+        }
 
         if (programmaticScrollRef.current) {
           if (section === pendingSectionRef.current) {
@@ -586,7 +600,7 @@ export function PortfolioPage() {
         syncPath(section, "replace");
       },
       {
-        threshold: [0.35, 0.6, 0.85],
+        threshold: [0, 0.2, 0.4, 0.6],
         rootMargin: "-15% 0px -45% 0px",
       },
     );
@@ -643,7 +657,7 @@ export function PortfolioPage() {
           <motion.section
             key={section.slug}
             id={section.slug}
-            className="scroll-mt-24"
+            className="scroll-mt-24 pt-8 md:pt-12"
             variants={sectionVariants}
             initial="hidden"
             whileInView="visible"
