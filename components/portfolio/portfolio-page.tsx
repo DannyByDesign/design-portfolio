@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +33,16 @@ type WorkSection = {
     alt: string;
   };
   tags: string[];
+};
+
+type IndustrialProject = {
+  title: string;
+  subtitle: string;
+  image: {
+    src: string;
+    alt: string;
+  };
+  tone: string;
 };
 
 type DefinitionSense = {
@@ -70,24 +81,46 @@ const heroDefinitionSenses: DefinitionSense[] = [
   },
 ];
 
-const workSections: WorkSection[] = [
+const industrialProjects: IndustrialProject[] = [
   {
-    slug: "industrial-design",
-    label: "Industrial Design",
-    term: "industrial design",
-    pronunciation: "in-du-stri-al de-sign",
-    definition:
-      "noun. the practice of shaping product form, utility, and material behavior into coherent objects.",
-    summary:
-      "Objects and systems explored through proportion, tactility, and manufacturing realism.",
-    details:
-      "Current studies cover concept-to-production workflows, from rough form discovery to refined prototype intent.",
-    image: {
-      src: "/window.svg",
-      alt: "Placeholder thumbnail for industrial design projects",
-    },
-    tags: ["CMF", "Product Form", "Prototype"],
+    title: "Concept Mobility System",
+    subtitle: "Speculative direction introducing a bold new interaction language.",
+    image: { src: "/window.svg", alt: "Placeholder visual for concept mobility system" },
+    tone: "from-zinc-100 to-zinc-50",
   },
+  {
+    title: "Adaptive Kitchen Tooling",
+    subtitle: "Early concepts exploring ergonomics, grip confidence, and modular forms.",
+    image: { src: "/globe.svg", alt: "Placeholder visual for adaptive kitchen tooling" },
+    tone: "from-stone-100 to-zinc-50",
+  },
+  {
+    title: "Wearable Utility Concept",
+    subtitle: "Form studies focused on movement comfort and intuitive attachment points.",
+    image: { src: "/file.svg", alt: "Placeholder visual for wearable utility concept" },
+    tone: "from-zinc-100 to-neutral-50",
+  },
+  {
+    title: "Consumer Device Program",
+    subtitle: "Sketch-to-shelf pipeline from concept architecture to production intent.",
+    image: { src: "/window.svg", alt: "Placeholder visual for consumer device program" },
+    tone: "from-zinc-100 to-zinc-50",
+  },
+  {
+    title: "Household Product Line",
+    subtitle: "End-to-end development balancing manufacturing, cost, and usability.",
+    image: { src: "/globe.svg", alt: "Placeholder visual for household product line" },
+    tone: "from-stone-100 to-zinc-50",
+  },
+  {
+    title: "Accessory System Design",
+    subtitle: "Detail-driven execution from rough ideation to final production handoff.",
+    image: { src: "/file.svg", alt: "Placeholder visual for accessory system design" },
+    tone: "from-zinc-100 to-neutral-50",
+  },
+];
+
+const workSections: WorkSection[] = [
   {
     slug: "design-engineering",
     label: "Design Engineering",
@@ -128,7 +161,7 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
       <div className="mx-auto flex h-full w-full max-w-[1040px] items-center justify-between px-6 md:px-8">
         <button
           type="button"
-          className="text-[13px] font-medium tracking-tight text-black/80"
+          className="text-[17px] font-medium tracking-tight text-black/80"
           onClick={() => onNavigateSection("home")}
           aria-label="Navigate to Home"
         >
@@ -227,28 +260,29 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
     },
   };
 
-  const definitionContainerVariants = {
+  const senseListVariants = {
     hidden: {},
     visible: {
       transition: {
-        delayChildren: reducedMotion ? 0 : 0.08,
+        delayChildren: reducedMotion ? 0 : 0.72,
         staggerChildren: reducedMotion ? 0 : 0.12,
       },
     },
   };
 
-  const definitionRuleVariants = {
-    hidden: { opacity: 0 },
+  const senseRowVariants = {
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
     visible: {
       opacity: 1,
-      transition: { duration: 0.56, ease: easeOut },
+      y: 0,
+      transition: { duration: 0.55, ease: easeOut },
     },
   };
 
   return (
     <motion.section
       id="home"
-      className="scroll-mt-24 pt-[96px] md:pt-[120px]"
+      className="scroll-mt-24 min-h-[calc(100vh-64px)] pt-[96px] pb-10 md:pt-[120px] md:pb-14"
       variants={heroContainerVariants}
       initial="hidden"
       animate="visible"
@@ -267,22 +301,123 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
         </p>
       </motion.div>
 
-      <motion.div
-        className="mt-10"
-        variants={definitionContainerVariants}
-        initial="hidden"
-        animate="visible"
+      <div className="mt-10">
+        <div className="h-px w-full bg-black/10" />
+        <motion.ol
+          className="space-y-[24px] pb-8 pt-8 md:space-y-[26px] md:pb-10 md:pt-9"
+          variants={senseListVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {heroDefinitionSenses.map((sense) => (
+            <motion.li
+              key={sense.index}
+              className="grid grid-cols-[22px_minmax(0,1fr)] items-start gap-x-[18px] md:grid-cols-[28px_minmax(0,1fr)] md:gap-x-[20px]"
+              variants={senseRowVariants}
+            >
+              <span className="pt-[0.35em] text-left text-[12px] font-medium tracking-[0.08em] text-black/40 md:text-[13px]">
+                {sense.index}
+              </span>
+              <div className="max-w-[66ch]">
+                <p className="text-[16px] leading-[1.65] font-normal text-black/80 md:text-[17px]">
+                  {sense.text}
+                </p>
+              </div>
+            </motion.li>
+          ))}
+        </motion.ol>
+      </div>
+    </motion.section>
+  );
+}
+
+function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
+  const reducedMotion = prefersReducedMotion ?? false;
+
+  const introVariants = {
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: easeOut },
+    },
+  };
+
+  const cardGridVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: reducedMotion ? 0 : 0.08,
+      },
+    },
+  };
+
+  const cardItemVariants = {
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: easeOut },
+    },
+  };
+
+  return (
+    <motion.section
+      id="industrial-design"
+      className="scroll-mt-24 pt-2 md:pt-4"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.24 }}
+    >
+      <motion.p className="definition-kicker" variants={introVariants}>
+        physical experiences
+      </motion.p>
+      <motion.h2
+        className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
+        variants={introVariants}
       >
-        <motion.div className="h-px w-full bg-black/10" variants={definitionRuleVariants} />
-        {heroDefinitionSenses.map((sense) => (
-          <motion.div
-            key={sense.index}
-            className="grid grid-cols-[30px_minmax(0,64ch)] gap-5 border-b border-black/5 py-5 md:py-6"
-            variants={heroItemVariants}
-          >
-            <p className="pt-0.5 text-right text-[14px] font-medium text-black/55">{sense.index}</p>
-            <p className="text-[18px] leading-[1.55] text-black/85">{sense.text}</p>
-          </motion.div>
+        industrial design
+      </motion.h2>
+      <motion.p
+        className="mt-4 max-w-[56ch] text-[16px] leading-[1.58] text-black/55"
+        variants={introVariants}
+      >
+        I work on both conceptual projects that introduce bold ideas and sketch-to-shelf projects
+        that showcase my end-to-end design capabilities.
+      </motion.p>
+
+      <motion.div
+        className="mt-9 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3"
+        variants={cardGridVariants}
+      >
+        {industrialProjects.map((project) => (
+          <motion.article key={project.title} variants={cardItemVariants}>
+            <Card className="group relative overflow-hidden rounded-none border-black/10 bg-white p-0">
+              <div
+                className={cn(
+                  "relative aspect-[1/1] overflow-hidden bg-gradient-to-b md:aspect-[5/4]",
+                  project.tone,
+                )}
+              >
+                <Image
+                  src={project.image.src}
+                  alt={project.image.alt}
+                  fill
+                  sizes="(min-width: 1024px) 280px, (min-width: 768px) 45vw, 100vw"
+                  className="object-contain p-8 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:scale-[1.06]"
+                />
+                <div className="absolute inset-0 bg-black/5 transition-colors duration-500 md:group-hover:bg-black/45" />
+                <div className="absolute inset-x-0 bottom-0 p-4 text-white opacity-100 transition-all duration-500 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                  <p className="text-[15px] leading-tight font-medium tracking-[-0.01em]">
+                    {project.title}
+                  </p>
+                  <p className="mt-1 text-[13px] leading-[1.45] text-white/86">
+                    {project.subtitle}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </motion.article>
         ))}
       </motion.div>
     </motion.section>
@@ -450,8 +585,9 @@ export function PortfolioPage() {
     <div className="bg-white text-black">
       <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
 
-      <main className="mx-auto flex w-full max-w-[880px] flex-col gap-[96px] px-6 pb-24 md:gap-[116px] md:px-8 lg:gap-[136px]">
+      <main className="mx-auto flex w-full max-w-[880px] flex-col gap-[56px] px-6 pb-24 md:gap-[72px] md:px-8 lg:gap-[88px]">
         <HeroDefinition prefersReducedMotion={prefersReducedMotion} />
+        <IndustrialDesignSection prefersReducedMotion={prefersReducedMotion} />
 
         {workSections.map((section) => (
           <motion.section
