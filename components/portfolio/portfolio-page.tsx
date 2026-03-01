@@ -3,8 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Menu } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,12 +12,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-type PortfolioSection = "home" | "industrial-design" | "design-engineering";
+type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "contact";
 
 type WorkSection = {
   slug: Exclude<PortfolioSection, "home">;
@@ -50,18 +48,20 @@ type DefinitionSense = {
   text: string;
 };
 
-const sectionIds: PortfolioSection[] = ["home", "industrial-design", "design-engineering"];
+const sectionIds: PortfolioSection[] = ["home", "industrial-design", "design-engineering", "contact"];
 
 const routeBySection: Record<PortfolioSection, string> = {
   home: "/",
   "industrial-design": "/industrial-design",
   "design-engineering": "/design-engineering",
+  contact: "/contact",
 };
 
 const sectionByPath: Record<string, PortfolioSection> = {
   "/": "home",
   "/industrial-design": "industrial-design",
   "/design-engineering": "design-engineering",
+  "/contact": "contact",
 };
 
 const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -69,7 +69,7 @@ const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const heroDefinitionSenses: DefinitionSense[] = [
   {
     index: 1,
-    text: "Treats constraints as material — shaping products that feel inevitable.",
+    text: "Treats constraints as material and shapes products that feel inevitable.",
   },
   {
     index: 2,
@@ -77,7 +77,7 @@ const heroDefinitionSenses: DefinitionSense[] = [
   },
   {
     index: 3,
-    text: "Believes great designers build products, but exceptional teams redefine possibilities.",
+    text: "Believes exceptional teams redefine possibilities.",
   },
 ];
 
@@ -154,6 +154,7 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
     { section: "home", label: "Home" },
     { section: "industrial-design", label: "Industrial Design" },
     { section: "design-engineering", label: "Design Engineering" },
+    { section: "contact", label: "Contact" },
   ];
 
   return (
@@ -178,7 +179,7 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
                 type="button"
                 onClick={() => onNavigateSection(item.section)}
                 className={cn(
-                  "group relative pb-[8px] text-[13px] font-normal transition-colors",
+                  "group relative pb-[6px] text-[13px] font-normal transition-colors",
                   isActive ? "text-black/90" : "text-black/60 hover:text-black/90",
                 )}
                 aria-current={isActive ? "page" : undefined}
@@ -186,7 +187,7 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
                 {item.label}
                 <span
                   className={cn(
-                    "absolute right-0 -bottom-[7px] left-0 h-px origin-left bg-black/60 transition-transform duration-200",
+                    "absolute right-0 -bottom-[3px] left-0 h-px origin-left bg-black/60 transition-transform duration-200",
                     isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                   )}
                   aria-hidden="true"
@@ -194,13 +195,6 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
               </button>
             );
           })}
-
-          <Link
-            href="/about"
-            className="pb-[8px] text-[13px] font-normal text-black/60 transition-colors hover:text-black/90"
-          >
-            About
-          </Link>
         </nav>
 
         <div className="md:hidden">
@@ -227,10 +221,6 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
                   {item.label}
                 </DropdownMenuItem>
               ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild className="text-[13px] text-black/65">
-                <Link href="/about">About</Link>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -264,8 +254,8 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
     hidden: {},
     visible: {
       transition: {
-        delayChildren: reducedMotion ? 0 : 0.72,
-        staggerChildren: reducedMotion ? 0 : 0.12,
+        delayChildren: reducedMotion ? 0 : 0.9,
+        staggerChildren: reducedMotion ? 0 : 0.11,
       },
     },
   };
@@ -307,27 +297,34 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
 
       <div className="mt-10 w-full max-w-[820px]">
         <div className="h-px w-full bg-black/10" />
-        <motion.ol
-          className="mx-auto max-w-[760px] space-y-[24px] pb-8 pt-8 md:space-y-[26px] md:pb-10 md:pt-9"
+        <motion.div
+          className="mx-auto mt-6 w-full max-w-[720px] px-1 pb-8 pl-8 text-left md:mt-8 md:pb-10 md:pl-[44px]"
           variants={senseListVariants}
           initial="hidden"
           animate="visible"
         >
-          {heroDefinitionSenses.map((sense) => (
-            <motion.li
-              key={sense.index}
-              className="mx-auto max-w-[66ch]"
-              variants={senseRowVariants}
-            >
-              <p className="text-center text-[16px] leading-[1.65] font-normal text-black/55 md:text-[17px]">
-                <span className="mr-3 inline-block font-normal tracking-[0.08em] md:mr-4">
+          {heroDefinitionSenses.map((sense, index) => (
+            <Fragment key={sense.index}>
+              <motion.div
+                className="grid grid-cols-[28px_1fr] items-baseline gap-x-[18px] py-2 text-left md:gap-x-5"
+                variants={senseRowVariants}
+              >
+                <span className="text-[16px] leading-[1.7] font-normal text-black/38 tabular-nums md:text-[17px]">
                   {sense.index}
                 </span>
-                {sense.text}
-              </p>
-            </motion.li>
+                <p className="max-w-[66ch] text-[16px] leading-[1.7] font-normal text-black/78 md:text-[17px]">
+                  {sense.text}
+                </p>
+              </motion.div>
+              {index < heroDefinitionSenses.length - 1 ? (
+                <motion.div
+                  className="my-4 ml-[46px] w-[80%] border-t border-black/5 md:my-5 md:ml-[48px]"
+                  variants={senseRowVariants}
+                />
+              ) : null}
+            </Fragment>
           ))}
-        </motion.ol>
+        </motion.div>
       </div>
     </motion.section>
   );
@@ -422,6 +419,57 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
           </motion.article>
         ))}
       </motion.div>
+    </motion.section>
+  );
+}
+
+function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
+  const reducedMotion = prefersReducedMotion ?? false;
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: reducedMotion ? 0 : 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: easeOut },
+    },
+  };
+
+  return (
+    <motion.section
+      id="contact"
+      className="scroll-mt-24 pb-4"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.35 }}
+    >
+      <motion.p className="definition-kicker" variants={itemVariants}>
+        contact
+      </motion.p>
+      <motion.h2
+        className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
+        variants={itemVariants}
+      >
+        Let&apos;s build something meaningful.
+      </motion.h2>
+      <motion.p className="mt-4 max-w-[64ch] text-[1.05rem] leading-[1.62] text-black/65" variants={itemVariants}>
+        I&apos;m open to internships, full-time roles, and collaborative projects across industrial
+        design and product engineering.
+      </motion.p>
+      <motion.p className="mt-5 text-[0.95rem] text-black/70" variants={itemVariants}>
+        Email: dannywang.design@gmail.com
+      </motion.p>
+      <motion.div className="mt-8 h-px w-full bg-black/8" variants={itemVariants} />
     </motion.section>
   );
 }
@@ -665,6 +713,8 @@ export function PortfolioPage() {
             </div>
           </motion.section>
         ))}
+
+        <ContactSection prefersReducedMotion={prefersReducedMotion} />
       </main>
     </div>
   );
