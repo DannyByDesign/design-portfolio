@@ -27,7 +27,7 @@ function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-[12rem] origin-[--radix-dropdown-menu-content-transform-origin] overflow-hidden rounded-md border border-black/10 bg-white p-1 text-black shadow-lg outline-none",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-[12rem] origin-[--radix-dropdown-menu-content-transform-origin] overflow-hidden rounded-md border border-stone-600/10 bg-white p-1 text-stone-600 shadow-lg outline-none",
           className,
         )}
         {...props}
@@ -48,7 +48,7 @@ function DropdownMenuItem({
       data-slot="dropdown-menu-item"
       data-inset={inset}
       className={cn(
-        "focus:bg-black/5 focus:text-black relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset=true]:pl-8",
+        "focus:bg-stone-600/5 focus:text-stone-600 relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset=true]:pl-8",
         className,
       )}
       {...props}
@@ -66,7 +66,7 @@ function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
-        "focus:bg-black/5 focus:text-black relative flex cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "focus:bg-stone-600/5 focus:text-stone-600 relative flex cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       checked={checked}
@@ -97,7 +97,7 @@ function DropdownMenuRadioItem({
     <DropdownMenuPrimitive.RadioItem
       data-slot="dropdown-menu-radio-item"
       className={cn(
-        "focus:bg-black/5 focus:text-black relative flex cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "focus:bg-stone-600/5 focus:text-stone-600 relative flex cursor-default items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}
       {...props}
@@ -136,7 +136,7 @@ function DropdownMenuSeparator({
   return (
     <DropdownMenuPrimitive.Separator
       data-slot="dropdown-menu-separator"
-      className={cn("-mx-1 my-1 h-px bg-black/10", className)}
+      className={cn("-mx-1 my-1 h-px bg-stone-600/10", className)}
       {...props}
     />
   );
@@ -172,7 +172,7 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "focus:bg-black/5 focus:text-black data-[state=open]:bg-black/5 relative flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[inset=true]:pl-8",
+        "focus:bg-stone-600/5 focus:text-stone-600 data-[state=open]:bg-stone-600/5 relative flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[inset=true]:pl-8",
         className,
       )}
       {...props}
@@ -191,7 +191,7 @@ function DropdownMenuSubContent({
     <DropdownMenuPrimitive.SubContent
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-[12rem] origin-[--radix-dropdown-menu-content-transform-origin] overflow-hidden rounded-md border border-black/10 bg-white p-1 text-black shadow-lg",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-[12rem] origin-[--radix-dropdown-menu-content-transform-origin] overflow-hidden rounded-md border border-stone-600/10 bg-white p-1 text-stone-600 shadow-lg",
         className,
       )}
       {...props}

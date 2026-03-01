@@ -1,12 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Menu } from "lucide-react";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { Menu } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -17,21 +16,6 @@ import {
 import { cn } from "@/lib/utils";
 
 type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "contact";
-
-type WorkSection = {
-  slug: Exclude<PortfolioSection, "home">;
-  label: string;
-  term: string;
-  pronunciation: string;
-  definition: string;
-  summary: string;
-  details: string;
-  image: {
-    src: string;
-    alt: string;
-  };
-  tags: string[];
-};
 
 type IndustrialProject = {
   title: string;
@@ -120,26 +104,6 @@ const industrialProjects: IndustrialProject[] = [
   },
 ];
 
-const workSections: WorkSection[] = [
-  {
-    slug: "design-engineering",
-    label: "Design Engineering",
-    term: "design engineering",
-    pronunciation: "de-sign en-juh-neer-ing",
-    definition:
-      "noun. the integration of interface design with implementation to ship usable, performant digital systems.",
-    summary:
-      "Front-end systems built with careful interaction, accessibility, and maintainable architecture.",
-    details:
-      "Projects emphasize stable routing behavior, motion discipline, and production-friendly component foundations.",
-    image: {
-      src: "/globe.svg",
-      alt: "Placeholder thumbnail for design engineering projects",
-    },
-    tags: ["Next.js", "Motion", "Systems"],
-  },
-];
-
 function sectionFromPath(pathname: string): PortfolioSection {
   return sectionByPath[pathname] ?? "home";
 }
@@ -158,11 +122,11 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-black/5 bg-white/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-30 h-20 border-b border-stone-600/5 bg-white/80 backdrop-blur-sm">
       <div className="mx-auto flex h-full w-full max-w-[1040px] items-center justify-between px-6 md:px-8">
         <button
           type="button"
-          className="text-[17px] font-medium tracking-tight text-black/80"
+          className="text-[17px] font-medium tracking-tight text-stone-600/80"
           onClick={() => onNavigateSection("home")}
           aria-label="Navigate to Home"
         >
@@ -180,14 +144,14 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
                 onClick={() => onNavigateSection(item.section)}
                 className={cn(
                   "group relative pb-[6px] text-[13px] font-normal transition-colors",
-                  isActive ? "text-black/90" : "text-black/60 hover:text-black/90",
+                  isActive ? "text-stone-600/90" : "text-stone-600/60 hover:text-stone-600/90",
                 )}
                 aria-current={isActive ? "page" : undefined}
               >
                 {item.label}
                 <span
                   className={cn(
-                    "absolute right-0 -bottom-[3px] left-0 h-px origin-left bg-black/60 transition-transform duration-200",
+                    "absolute right-0 -bottom-[3px] left-0 h-px origin-left bg-stone-600/60 transition-transform duration-200 group-hover:bg-[#ff4d1a]",
                     isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                   )}
                   aria-hidden="true"
@@ -203,19 +167,19 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
               <button
                 type="button"
                 aria-label="Open navigation menu"
-                className="inline-flex h-8 items-center justify-center text-black/65 transition-colors hover:text-black/90"
+                className="inline-flex h-11 w-11 items-center justify-center text-stone-600/70 transition-colors hover:text-stone-600/90"
               >
-                <Menu className="size-4" aria-hidden="true" />
+                <Menu className="size-5" aria-hidden="true" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 border-black/10">
+            <DropdownMenuContent align="end" className="w-52 border-stone-600/10">
               {navItems.map((item) => (
                 <DropdownMenuItem
                   key={item.section}
                   onSelect={() => onNavigateSection(item.section)}
                   className={cn(
                     "text-[13px]",
-                    activeSection === item.section ? "text-black/90" : "text-black/65",
+                    activeSection === item.section ? "text-stone-600/90" : "text-stone-600/65",
                   )}
                 >
                   {item.label}
@@ -226,6 +190,43 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
         </div>
       </div>
     </header>
+  );
+}
+
+function PageFrameScroll({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 26,
+    mass: 0.22,
+  });
+  const frameProgress = prefersReducedMotion ? scrollYProgress : smoothProgress;
+  const remainingProgress = useTransform(frameProgress, [0, 1], [1, 0]);
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-x-0 top-20 bottom-0 z-20"
+    >
+      <div className="mx-auto h-full w-full max-w-[1040px] px-6 md:px-8">
+        <div className="relative h-full">
+          <div className="absolute inset-y-4 left-0 -translate-x-10 md:inset-y-6 md:-translate-x-14 lg:-translate-x-16">
+            <span className="absolute inset-y-0 left-0 w-px bg-stone-600/8" />
+            <motion.span
+              className="absolute inset-y-0 left-0 w-[1.5px] origin-bottom bg-stone-600/30"
+              style={{ scaleY: remainingProgress }}
+            />
+          </div>
+          <div className="absolute inset-y-4 right-0 translate-x-10 md:inset-y-6 md:translate-x-14 lg:translate-x-16">
+            <span className="absolute inset-y-0 left-0 w-px bg-stone-600/8" />
+            <motion.span
+              className="absolute inset-y-0 left-0 w-[1.5px] origin-bottom bg-stone-600/30"
+              style={{ scaleY: remainingProgress }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -272,31 +273,31 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
   return (
     <motion.section
       id="home"
-      className="scroll-mt-24 flex min-h-[calc(100vh-64px)] flex-col items-center pt-[96px] pb-10 text-center md:pt-[120px] md:pb-14"
+      className="scroll-mt-24 flex min-h-[calc(100vh-80px)] flex-col items-center pt-[96px] pb-10 text-center md:pt-[120px] md:pb-14"
       variants={heroContainerVariants}
       initial="hidden"
       animate="visible"
     >
       <div className="flex flex-col items-center">
         <motion.h1
-          className="font-serif text-[44px] leading-[1] font-semibold tracking-[-0.03em] text-black/95 md:text-[64px] md:leading-[0.95]"
+          className="font-serif text-[44px] leading-[1] font-semibold tracking-[-0.03em] text-stone-600/95 md:text-[64px] md:leading-[0.95]"
           variants={heroItemVariants}
         >
           designer
         </motion.h1>
-        <motion.p className="mt-[10px] text-[14px] tracking-normal text-black/50" variants={heroItemVariants}>
+        <motion.p className="mt-[10px] text-[14px] tracking-normal text-stone-600/50" variants={heroItemVariants}>
           /dəˈzīnər/
         </motion.p>
       </div>
 
       <motion.div className="mt-[28px]" variants={heroItemVariants}>
-        <p className="text-[12px] uppercase tracking-[0.22em] text-black/55">
+        <p className="text-[12px] uppercase tracking-[0.22em] text-stone-600/55">
           ENTRY NO. 01 · NOUN · /DANNY WANG/
         </p>
       </motion.div>
 
       <div className="mt-10 w-full max-w-[820px]">
-        <div className="h-px w-full bg-black/10" />
+        <div className="h-px w-full bg-stone-600/10" />
         <motion.div
           className="mx-auto mt-6 w-full max-w-[720px] px-1 pb-8 pl-8 text-left md:mt-8 md:pb-10 md:pl-[44px]"
           variants={senseListVariants}
@@ -309,16 +310,16 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
                 className="grid grid-cols-[28px_1fr] items-baseline gap-x-[18px] py-2 text-left md:gap-x-5"
                 variants={senseRowVariants}
               >
-                <span className="text-[16px] leading-[1.7] font-normal text-black/38 tabular-nums md:text-[17px]">
+                <span className="text-[16px] leading-[1.7] font-normal text-stone-600/38 tabular-nums md:text-[17px]">
                   {sense.index}
                 </span>
-                <p className="max-w-[66ch] text-[16px] leading-[1.7] font-normal text-black/78 md:text-[17px]">
+                <p className="max-w-[66ch] text-[16px] leading-[1.7] font-normal text-stone-600/78 md:text-[17px]">
                   {sense.text}
                 </p>
               </motion.div>
               {index < heroDefinitionSenses.length - 1 ? (
                 <motion.div
-                  className="my-4 ml-[46px] w-[80%] border-t border-black/5 md:my-5 md:ml-[48px]"
+                  className="my-4 ml-[46px] w-[80%] border-t border-stone-600/5 md:my-5 md:ml-[48px]"
                   variants={senseRowVariants}
                 />
               ) : null}
@@ -363,7 +364,7 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
   return (
     <motion.section
       id="industrial-design"
-      className="scroll-mt-24 pt-8 md:pt-12"
+      className="scroll-mt-24 pt-14 md:pt-20"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.24 }}
@@ -378,11 +379,11 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
         industrial design
       </motion.h2>
       <motion.p
-        className="mt-4 max-w-[56ch] px-1 py-1 text-[16px] leading-[1.58] text-black/55"
+        className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
         variants={introVariants}
       >
-        I work on both conceptual projects that introduce bold ideas and sketch-to-shelf projects
-        that showcase my end-to-end design capabilities.
+        I design both concept explorations and production-ready products, from early form studies
+        to manufacturing handoff.
       </motion.p>
 
       <motion.div
@@ -391,7 +392,7 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
       >
         {industrialProjects.map((project) => (
           <motion.article key={project.title} variants={cardItemVariants}>
-            <Card className="group relative overflow-hidden rounded-none border-black/10 bg-white p-0">
+            <Card className="group relative overflow-hidden rounded-none border-stone-600/10 bg-white p-0">
               <div
                 className={cn(
                   "relative aspect-[1/1] overflow-hidden bg-gradient-to-b",
@@ -405,7 +406,7 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
                   sizes="(min-width: 1024px) 280px, (min-width: 768px) 45vw, 100vw"
                   className="object-contain p-10 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:p-11 md:group-hover:scale-[1.06]"
                 />
-                <div className="absolute inset-0 bg-black/5 transition-colors duration-500 md:group-hover:bg-black/45" />
+                <div className="absolute inset-0 bg-stone-600/5 transition-colors duration-500 md:group-hover:bg-stone-600/45" />
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white opacity-100 transition-all duration-500 md:translate-y-2 md:p-6 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
                   <p className="text-[15px] leading-tight font-medium tracking-[-0.01em]">
                     {project.title}
@@ -419,6 +420,46 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
           </motion.article>
         ))}
       </motion.div>
+    </motion.section>
+  );
+}
+
+function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
+  const reducedMotion = prefersReducedMotion ?? false;
+
+  const introVariants = {
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: easeOut },
+    },
+  };
+
+  return (
+    <motion.section
+      id="design-engineering"
+      className="scroll-mt-24 pt-14 md:pt-20"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.24 }}
+    >
+      <motion.p className="definition-kicker" variants={introVariants}>
+        AI-enabled problem solving
+      </motion.p>
+      <motion.h2
+        className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
+        variants={introVariants}
+      >
+        design engineering
+      </motion.h2>
+      <motion.p
+        className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
+        variants={introVariants}
+      >
+        I use AI to turn ambiguous product and workflow challenges into clear strategies, fast
+        prototypes, and decisions that move teams forward.
+      </motion.p>
     </motion.section>
   );
 }
@@ -447,7 +488,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
   return (
     <motion.section
       id="contact"
-      className="scroll-mt-24 pt-8 pb-4 md:pt-12"
+      className="scroll-mt-24 min-h-[52vh] pt-14 pb-4 md:pt-20"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -462,26 +503,28 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
       >
         Let&apos;s build something meaningful.
       </motion.h2>
-      <motion.p className="mt-4 max-w-[64ch] text-[1.05rem] leading-[1.62] text-black/65" variants={itemVariants}>
+      <motion.p className="mt-4 max-w-[64ch] text-[1.05rem] leading-[1.62] text-stone-600/65" variants={itemVariants}>
         I&apos;m open to internships, full-time roles, and collaborative projects across industrial
         design and product engineering.
       </motion.p>
-      <motion.p className="mt-5 text-[0.95rem] text-black/70" variants={itemVariants}>
+      <motion.p className="mt-5 text-[0.95rem] text-stone-600/70" variants={itemVariants}>
         Email: dannywang.design@gmail.com
       </motion.p>
-      <motion.div className="mt-8 h-px w-full bg-black/8" variants={itemVariants} />
+      <motion.div className="mt-8 h-px w-full bg-stone-600/8" variants={itemVariants} />
     </motion.section>
   );
 }
 
 export function PortfolioPage() {
+  const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
   const rafRef = useRef<number | null>(null);
+  const programmaticTimerRef = useRef<number | null>(null);
   const activeSectionRef = useRef<PortfolioSection>("home");
   const pendingSectionRef = useRef<PortfolioSection | null>(null);
   const programmaticScrollRef = useRef(false);
   const [activeSection, setActiveSection] = useState<PortfolioSection>(() =>
-    typeof window === "undefined" ? "home" : sectionFromPath(window.location.pathname),
+    sectionFromPath(pathname ?? "/"),
   );
 
   const syncPath = useCallback((section: PortfolioSection, mode: "push" | "replace") => {
@@ -518,6 +561,18 @@ export function PortfolioPage() {
 
         programmaticScrollRef.current = true;
         pendingSectionRef.current = section;
+
+        if (programmaticTimerRef.current !== null) {
+          window.clearTimeout(programmaticTimerRef.current);
+        }
+
+        // Failsafe: never leave the observer in permanent programmatic mode.
+        programmaticTimerRef.current = window.setTimeout(() => {
+          programmaticScrollRef.current = false;
+          pendingSectionRef.current = null;
+          programmaticTimerRef.current = null;
+        }, 900);
+
         target.scrollIntoView({
           behavior: "auto",
           block: "start",
@@ -528,10 +583,10 @@ export function PortfolioPage() {
   );
 
   useEffect(() => {
-    const initialSection = sectionFromPath(window.location.pathname);
+    const initialSection = sectionFromPath(pathname ?? "/");
     activeSectionRef.current = initialSection;
     goToSection(initialSection, "none");
-  }, [goToSection]);
+  }, [goToSection, pathname]);
 
   useEffect(() => {
     const onPopState = () => {
@@ -585,6 +640,10 @@ export function PortfolioPage() {
           if (section === pendingSectionRef.current) {
             programmaticScrollRef.current = false;
             pendingSectionRef.current = null;
+            if (programmaticTimerRef.current !== null) {
+              window.clearTimeout(programmaticTimerRef.current);
+              programmaticTimerRef.current = null;
+            }
             activeSectionRef.current = section;
             setActiveSection(section);
           }
@@ -601,7 +660,7 @@ export function PortfolioPage() {
       },
       {
         threshold: [0, 0.2, 0.4, 0.6],
-        rootMargin: "-15% 0px -45% 0px",
+        rootMargin: "-15% 0px -20% 0px",
       },
     );
 
@@ -615,6 +674,9 @@ export function PortfolioPage() {
       if (rafRef.current !== null) {
         window.cancelAnimationFrame(rafRef.current);
       }
+      if (programmaticTimerRef.current !== null) {
+        window.clearTimeout(programmaticTimerRef.current);
+      }
     };
   }, []);
 
@@ -627,106 +689,15 @@ export function PortfolioPage() {
     [goToSection],
   );
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.58, ease: easeOut },
-    },
-  };
-
-  const sectionVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: prefersReducedMotion ? 0 : 0.1,
-      },
-    },
-  };
-
   return (
-    <div className="bg-white text-black">
+    <div className="bg-white text-stone-600">
       <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
+      <PageFrameScroll prefersReducedMotion={prefersReducedMotion} />
 
-      <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-[56px] px-6 pb-24 md:gap-[72px] md:px-8 lg:gap-[88px]">
+      <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-[56px] px-6 pb-40 md:gap-[72px] md:px-8 md:pb-48 lg:gap-[88px]">
         <HeroDefinition prefersReducedMotion={prefersReducedMotion} />
         <IndustrialDesignSection prefersReducedMotion={prefersReducedMotion} />
-
-        {workSections.map((section) => (
-          <motion.section
-            key={section.slug}
-            id={section.slug}
-            className="scroll-mt-24 pt-8 md:pt-12"
-            variants={sectionVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <div className="space-y-6">
-              <motion.p className="definition-kicker" variants={itemVariants}>
-                {section.label}
-              </motion.p>
-              <motion.h2
-                className="text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
-                variants={itemVariants}
-              >
-                {section.term}
-              </motion.h2>
-              <motion.p
-                className="text-muted-foreground text-[0.86rem] uppercase"
-                variants={itemVariants}
-              >
-                {section.pronunciation}
-              </motion.p>
-              <motion.p className="definition-line" variants={itemVariants}>
-                {section.definition}
-              </motion.p>
-              <motion.p
-                className="max-w-[70ch] text-[1.25rem] leading-[1.45] font-[540]"
-                variants={itemVariants}
-              >
-                {section.summary}
-              </motion.p>
-              <motion.p className="paragraph-body" variants={itemVariants}>
-                {section.details}
-              </motion.p>
-
-              <motion.figure
-                className="ring-border relative mt-2 aspect-[16/9] w-full overflow-hidden bg-white ring-1"
-                variants={itemVariants}
-              >
-                <Image
-                  src={section.image.src}
-                  alt={section.image.alt}
-                  fill
-                  sizes="(min-width: 1024px) 880px, 100vw"
-                  className="object-contain p-12 opacity-80"
-                />
-              </motion.figure>
-
-              <motion.div className="flex flex-wrap gap-2" variants={itemVariants}>
-                {section.tags.map((tag) => (
-                  <Badge key={tag}>{tag}</Badge>
-                ))}
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="h-auto px-0 text-[0.95rem]"
-                  onClick={() => handleSectionNav(section.slug)}
-                >
-                  Open section URL
-                  <ArrowUpRight aria-hidden="true" />
-                </Button>
-              </motion.div>
-
-              <motion.div className="hairline" variants={itemVariants} />
-            </div>
-          </motion.section>
-        ))}
+        <DesignEngineeringSection prefersReducedMotion={prefersReducedMotion} />
 
         <ContactSection prefersReducedMotion={prefersReducedMotion} />
       </main>
