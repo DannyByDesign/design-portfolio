@@ -1,12 +1,21 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Menu } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 type PortfolioSection = "home" | "industrial-design" | "design-engineering";
 
@@ -25,6 +34,11 @@ type WorkSection = {
   tags: string[];
 };
 
+type DefinitionSense = {
+  index: number;
+  text: string;
+};
+
 const sectionIds: PortfolioSection[] = ["home", "industrial-design", "design-engineering"];
 
 const routeBySection: Record<PortfolioSection, string> = {
@@ -40,6 +54,21 @@ const sectionByPath: Record<string, PortfolioSection> = {
 };
 
 const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const heroDefinitionSenses: DefinitionSense[] = [
+  {
+    index: 1,
+    text: "Treats constraints as material — shaping products that feel inevitable.",
+  },
+  {
+    index: 2,
+    text: "Knows when to respect limits, and when to push beyond them in service of the user.",
+  },
+  {
+    index: 3,
+    text: "Believes great designers build products, but exceptional teams redefine possibilities.",
+  },
+];
 
 const workSections: WorkSection[] = [
   {
@@ -82,12 +111,193 @@ function sectionFromPath(pathname: string): PortfolioSection {
   return sectionByPath[pathname] ?? "home";
 }
 
+type HeaderProps = {
+  activeSection: PortfolioSection;
+  onNavigateSection: (section: PortfolioSection) => void;
+};
+
+function Header({ activeSection, onNavigateSection }: HeaderProps) {
+  const navItems: Array<{ section: PortfolioSection; label: string }> = [
+    { section: "home", label: "Home" },
+    { section: "industrial-design", label: "Industrial Design" },
+    { section: "design-engineering", label: "Design Engineering" },
+  ];
+
+  return (
+    <header className="sticky top-0 z-30 h-16 border-b border-black/5 bg-white/80 backdrop-blur-sm">
+      <div className="mx-auto flex h-full w-full max-w-[1040px] items-center justify-between px-6 md:px-8">
+        <button
+          type="button"
+          className="text-[13px] font-medium tracking-tight text-black/80"
+          onClick={() => onNavigateSection("home")}
+          aria-label="Navigate to Home"
+        >
+          Danny Wang
+        </button>
+
+        <nav className="hidden items-center gap-5 md:flex lg:gap-6">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.section;
+
+            return (
+              <button
+                key={item.section}
+                type="button"
+                onClick={() => onNavigateSection(item.section)}
+                className={cn(
+                  "group relative pb-[8px] text-[13px] font-normal transition-colors",
+                  isActive ? "text-black/90" : "text-black/60 hover:text-black/90",
+                )}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {item.label}
+                <span
+                  className={cn(
+                    "absolute right-0 -bottom-[7px] left-0 h-px origin-left bg-black/60 transition-transform duration-200",
+                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
+            );
+          })}
+
+          <Link
+            href="/about"
+            className="pb-[8px] text-[13px] font-normal text-black/60 transition-colors hover:text-black/90"
+          >
+            About
+          </Link>
+        </nav>
+
+        <div className="md:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label="Open navigation menu"
+                className="inline-flex h-8 items-center justify-center text-black/65 transition-colors hover:text-black/90"
+              >
+                <Menu className="size-4" aria-hidden="true" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52 border-black/10">
+              {navItems.map((item) => (
+                <DropdownMenuItem
+                  key={item.section}
+                  onSelect={() => onNavigateSection(item.section)}
+                  className={cn(
+                    "text-[13px]",
+                    activeSection === item.section ? "text-black/90" : "text-black/65",
+                  )}
+                >
+                  {item.label}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className="text-[13px] text-black/65">
+                <Link href="/about">About</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
+  const reducedMotion = prefersReducedMotion ?? false;
+
+  const heroItemVariants = {
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.62, ease: easeOut },
+    },
+  };
+
+  const heroContainerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: reducedMotion ? 0 : 0.12,
+      },
+    },
+  };
+
+  const definitionContainerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        delayChildren: reducedMotion ? 0 : 0.08,
+        staggerChildren: reducedMotion ? 0 : 0.12,
+      },
+    },
+  };
+
+  const definitionRuleVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.56, ease: easeOut },
+    },
+  };
+
+  return (
+    <motion.section
+      id="home"
+      className="scroll-mt-24 pt-[96px] md:pt-[120px]"
+      variants={heroContainerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1
+        className="font-serif text-[44px] leading-[1] font-semibold tracking-[-0.03em] text-black/95 md:text-[64px] md:leading-[0.95]"
+        variants={heroItemVariants}
+      >
+        designer
+      </motion.h1>
+
+      <motion.div variants={heroItemVariants}>
+        <p className="mt-[10px] text-[14px] tracking-normal text-black/50">/dəˈzīnər/</p>
+        <p className="mt-[28px] text-[12px] uppercase tracking-[0.22em] text-black/55">
+          ENTRY NO. 01 · NOUN · /DANNY WANG/
+        </p>
+      </motion.div>
+
+      <motion.div
+        className="mt-10"
+        variants={definitionContainerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div className="h-px w-full bg-black/10" variants={definitionRuleVariants} />
+        {heroDefinitionSenses.map((sense) => (
+          <motion.div
+            key={sense.index}
+            className="grid grid-cols-[30px_minmax(0,64ch)] gap-5 border-b border-black/5 py-5 md:py-6"
+            variants={heroItemVariants}
+          >
+            <p className="pt-0.5 text-right text-[14px] font-medium text-black/55">{sense.index}</p>
+            <p className="text-[18px] leading-[1.55] text-black/85">{sense.text}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+    </motion.section>
+  );
+}
+
 export function PortfolioPage() {
   const prefersReducedMotion = useReducedMotion();
   const rafRef = useRef<number | null>(null);
   const activeSectionRef = useRef<PortfolioSection>("home");
   const pendingSectionRef = useRef<PortfolioSection | null>(null);
   const programmaticScrollRef = useRef(false);
+  const [activeSection, setActiveSection] = useState<PortfolioSection>(() =>
+    typeof window === "undefined" ? "home" : sectionFromPath(window.location.pathname),
+  );
 
   const syncPath = useCallback((section: PortfolioSection, mode: "push" | "replace") => {
     const nextPath = routeBySection[section];
@@ -124,22 +334,25 @@ export function PortfolioPage() {
         programmaticScrollRef.current = true;
         pendingSectionRef.current = section;
         target.scrollIntoView({
-          behavior: prefersReducedMotion ? "auto" : "smooth",
+          behavior: "auto",
           block: "start",
         });
       });
     },
-    [prefersReducedMotion, syncPath],
+    [syncPath],
   );
 
   useEffect(() => {
     const initialSection = sectionFromPath(window.location.pathname);
+    activeSectionRef.current = initialSection;
     goToSection(initialSection, "none");
   }, [goToSection]);
 
   useEffect(() => {
     const onPopState = () => {
       const section = sectionFromPath(window.location.pathname);
+      setActiveSection(section);
+      activeSectionRef.current = section;
       goToSection(section, "none");
     };
 
@@ -174,6 +387,7 @@ export function PortfolioPage() {
             programmaticScrollRef.current = false;
             pendingSectionRef.current = null;
             activeSectionRef.current = section;
+            setActiveSection(section);
           }
           return;
         }
@@ -183,6 +397,7 @@ export function PortfolioPage() {
         }
 
         activeSectionRef.current = section;
+        setActiveSection(section);
         syncPath(section, "replace");
       },
       {
@@ -206,6 +421,8 @@ export function PortfolioPage() {
 
   const handleSectionNav = useCallback(
     (section: PortfolioSection) => {
+      setActiveSection(section);
+      activeSectionRef.current = section;
       goToSection(section, "push");
     },
     [goToSection],
@@ -230,81 +447,11 @@ export function PortfolioPage() {
   };
 
   return (
-    <div className="bg-background text-foreground">
-      <header className="border-border bg-background/95 sticky top-0 z-20 border-b backdrop-blur-[1px]">
-        <div className="mx-auto flex w-full max-w-[880px] items-center justify-between px-5 py-4 md:px-8">
-          <Button
-            variant="link"
-            size="sm"
-            className="h-auto px-0 text-[0.95rem] font-medium tracking-[-0.01em]"
-            onClick={() => handleSectionNav("home")}
-          >
-            Danny Wang
-          </Button>
-          <nav className="flex items-center gap-6">
-            <Button
-              variant="link"
-              size="sm"
-              className="h-auto px-0 text-[0.95rem] font-medium tracking-[-0.01em]"
-              onClick={() => handleSectionNav("industrial-design")}
-            >
-              Industrial Design
-            </Button>
-            <Button
-              variant="link"
-              size="sm"
-              className="h-auto px-0 text-[0.95rem] font-medium tracking-[-0.01em]"
-              onClick={() => handleSectionNav("design-engineering")}
-            >
-              Design Engineering
-            </Button>
-          </nav>
-        </div>
-      </header>
+    <div className="bg-white text-black">
+      <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
 
-      <main className="mx-auto flex w-full max-w-[880px] flex-col gap-[96px] px-5 pt-[88px] pb-24 md:gap-[116px] md:px-8 md:pt-[104px] lg:gap-[136px] lg:pt-[120px]">
-        <motion.section
-          id="home"
-          className="scroll-mt-24"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.65 }}
-        >
-          <div className="space-y-6">
-            <motion.p className="definition-kicker" variants={itemVariants}>
-              portfolio
-            </motion.p>
-            <motion.h1
-              className="text-[2.4rem] leading-[1.08] font-[560] tracking-[-0.02em] md:text-[2.85rem] lg:text-[3.5rem]"
-              variants={itemVariants}
-            >
-              Danny Wang
-            </motion.h1>
-            <motion.p
-              className="text-muted-foreground text-[1.125rem] leading-[1.5] font-[500] md:text-[1.25rem]"
-              variants={itemVariants}
-            >
-              Designer
-            </motion.p>
-            <motion.p className="definition-line" variants={itemVariants}>
-              noun. a multidisciplinary maker translating intent into products, systems, and
-              measurable user outcomes.
-            </motion.p>
-            <motion.p
-              className="max-w-[68ch] text-[1.35rem] leading-[1.42] font-[560] tracking-[-0.02em] md:text-[1.5rem]"
-              variants={itemVariants}
-            >
-              My goal is to craft work that feels inevitable: clear in purpose, quiet in form, and
-              durable in use.
-            </motion.p>
-            <motion.p className="paragraph-body" variants={itemVariants}>
-              This portfolio combines industrial design and design engineering in one continuous
-              reading flow, with direct section deep links and restrained motion.
-            </motion.p>
-            <motion.div className="hairline" variants={itemVariants} />
-          </div>
-        </motion.section>
+      <main className="mx-auto flex w-full max-w-[880px] flex-col gap-[96px] px-6 pb-24 md:gap-[116px] md:px-8 lg:gap-[136px]">
+        <HeroDefinition prefersReducedMotion={prefersReducedMotion} />
 
         {workSections.map((section) => (
           <motion.section
