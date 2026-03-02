@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { Menu } from "lucide-react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
@@ -30,6 +30,11 @@ type IndustrialProject = {
 type DefinitionSense = {
   index: number;
   text: string;
+};
+
+type AiTimelineEntry = {
+  title: string;
+  detail: string;
 };
 
 const sectionIds: PortfolioSection[] = ["home", "industrial-design", "design-engineering", "contact"];
@@ -61,46 +66,61 @@ const heroDefinitionSenses: DefinitionSense[] = [
   },
   {
     index: 3,
-    text: "Believes exceptional teams redefine possibilities.",
+    text: "Believes exceptional teams can create and redefine possibilities.",
   },
 ];
 
 const industrialProjects: IndustrialProject[] = [
   {
     title: "Concept Mobility System",
-    subtitle: "Speculative direction introducing a bold new interaction language.",
+    subtitle: "Bold interaction concept.",
     image: { src: "/window.svg", alt: "Placeholder visual for concept mobility system" },
     tone: "from-zinc-100 to-zinc-50",
   },
   {
     title: "Adaptive Kitchen Tooling",
-    subtitle: "Early concepts exploring ergonomics, grip confidence, and modular forms.",
+    subtitle: "Ergonomic modular studies.",
     image: { src: "/globe.svg", alt: "Placeholder visual for adaptive kitchen tooling" },
     tone: "from-stone-100 to-zinc-50",
   },
   {
     title: "Wearable Utility Concept",
-    subtitle: "Form studies focused on movement comfort and intuitive attachment points.",
+    subtitle: "Comfort-first form studies.",
     image: { src: "/file.svg", alt: "Placeholder visual for wearable utility concept" },
     tone: "from-zinc-100 to-neutral-50",
   },
   {
     title: "Consumer Device Program",
-    subtitle: "Sketch-to-shelf pipeline from concept architecture to production intent.",
+    subtitle: "Sketch-to-shelf execution.",
     image: { src: "/window.svg", alt: "Placeholder visual for consumer device program" },
     tone: "from-zinc-100 to-zinc-50",
   },
   {
     title: "Household Product Line",
-    subtitle: "End-to-end development balancing manufacturing, cost, and usability.",
+    subtitle: "Manufacturing-ready product line.",
     image: { src: "/globe.svg", alt: "Placeholder visual for household product line" },
     tone: "from-stone-100 to-zinc-50",
   },
   {
     title: "Accessory System Design",
-    subtitle: "Detail-driven execution from rough ideation to final production handoff.",
+    subtitle: "Detail-led production handoff.",
     image: { src: "/file.svg", alt: "Placeholder visual for accessory system design" },
     tone: "from-zinc-100 to-neutral-50",
+  },
+];
+
+const aiTimelineEntries: AiTimelineEntry[] = [
+  {
+    title: "Workflow Automation",
+    detail: "I build AI tools that remove repetitive work and keep project momentum high.",
+  },
+  {
+    title: "Rapid Prototyping",
+    detail: "From idea to interactive proof, I use AI to test directions and validate decisions fast.",
+  },
+  {
+    title: "Production Delivery",
+    detail: "I translate AI-assisted concepts into practical applications teams can adopt and scale.",
   },
 ];
 
@@ -151,7 +171,7 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
                 {item.label}
                 <span
                   className={cn(
-                    "absolute right-0 -bottom-[3px] left-0 h-px origin-left bg-stone-600/60 transition-transform duration-200 group-hover:bg-[#ff4d1a]",
+                    "absolute right-0 -bottom-[3px] left-0 h-px origin-left bg-stone-600/60 transition-transform duration-200",
                     isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                   )}
                   aria-hidden="true"
@@ -190,43 +210,6 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
         </div>
       </div>
     </header>
-  );
-}
-
-function PageFrameScroll({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
-  const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 140,
-    damping: 26,
-    mass: 0.22,
-  });
-  const frameProgress = prefersReducedMotion ? scrollYProgress : smoothProgress;
-  const remainingProgress = useTransform(frameProgress, [0, 1], [1, 0]);
-
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-x-0 top-20 bottom-0 z-20"
-    >
-      <div className="mx-auto h-full w-full max-w-[1040px] px-6 md:px-8">
-        <div className="relative h-full">
-          <div className="absolute inset-y-4 left-0 -translate-x-10 md:inset-y-6 md:-translate-x-14 lg:-translate-x-16">
-            <span className="absolute inset-y-0 left-0 w-px bg-stone-600/8" />
-            <motion.span
-              className="absolute inset-y-0 left-0 w-[1.5px] origin-bottom bg-stone-600/30"
-              style={{ scaleY: remainingProgress }}
-            />
-          </div>
-          <div className="absolute inset-y-4 right-0 translate-x-10 md:inset-y-6 md:translate-x-14 lg:translate-x-16">
-            <span className="absolute inset-y-0 left-0 w-px bg-stone-600/8" />
-            <motion.span
-              className="absolute inset-y-0 left-0 w-[1.5px] origin-bottom bg-stone-600/30"
-              style={{ scaleY: remainingProgress }}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -273,11 +256,16 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
   return (
     <motion.section
       id="home"
-      className="scroll-mt-24 flex min-h-[calc(100vh-80px)] flex-col items-center pt-[96px] pb-10 text-center md:pt-[120px] md:pb-14"
+      className="scroll-mt-24 relative flex min-h-[calc(100vh-80px)] flex-col items-center pt-[96px] pb-10 text-center md:pt-[120px] md:pb-14"
       variants={heroContainerVariants}
       initial="hidden"
       animate="visible"
     >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 inset-y-0">
+        <span className="absolute inset-y-8 left-0 w-px bg-stone-600/10 md:inset-y-10" />
+        <span className="absolute inset-y-8 right-0 w-px bg-stone-600/10 md:inset-y-10" />
+      </div>
+
       <div className="flex flex-col items-center">
         <motion.h1
           className="font-serif text-[44px] leading-[1] font-semibold tracking-[-0.03em] text-stone-600/95 md:text-[64px] md:leading-[0.95]"
@@ -292,7 +280,7 @@ function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolea
 
       <motion.div className="mt-[28px]" variants={heroItemVariants}>
         <p className="text-[12px] uppercase tracking-[0.22em] text-stone-600/55">
-          ENTRY NO. 01 · NOUN · /DANNY WANG/
+          SAN FRANCISCO · REMOTE · /DANNY WANG/
         </p>
       </motion.div>
 
@@ -404,14 +392,14 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
                   alt={project.image.alt}
                   fill
                   sizes="(min-width: 1024px) 280px, (min-width: 768px) 45vw, 100vw"
-                  className="object-contain p-10 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:p-11 md:group-hover:scale-[1.06]"
+                  className="object-contain p-10 transition-transform duration-900 ease-[cubic-bezier(0.16,1,0.3,1)] md:p-11 md:group-hover:scale-[1.14]"
                 />
-                <div className="absolute inset-0 bg-stone-600/5 transition-colors duration-500 md:group-hover:bg-stone-600/45" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white opacity-100 transition-all duration-500 md:translate-y-2 md:p-6 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
-                  <p className="text-[15px] leading-tight font-medium tracking-[-0.01em]">
+                <div className="absolute inset-0 bg-stone-600/5 transition-colors duration-500 md:group-hover:bg-stone-600/58" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white opacity-100 transition-opacity duration-700 md:opacity-0 md:group-hover:opacity-100">
+                  <p className="text-[17px] leading-tight font-bold tracking-[-0.01em]">
                     {project.title}
                   </p>
-                  <p className="mt-1.5 text-[13px] leading-[1.45] text-white/86">
+                  <p className="mt-2 max-w-[18ch] text-[14px] leading-[1.3] text-white/88">
                     {project.subtitle}
                   </p>
                 </div>
@@ -426,6 +414,18 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
 
 function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
   const reducedMotion = prefersReducedMotion ?? false;
+  const timelineRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start 92%", "end 20%"],
+  });
+  const timelineProgress = scrollYProgress;
+  const lineFillScale = useTransform(timelineProgress, [0.06, 0.62], [0, 1]);
+  const nodeOneFill = useTransform(lineFillScale, [0.04, 0.16], [0, 1]);
+  const nodeTwoFill = useTransform(lineFillScale, [0.5, 0.64], [0, 1]);
+  const nodeThreeFillRaw = useTransform(lineFillScale, [0.97, 1], [0, 1]);
+  const nodeThreeFill = useTransform(nodeThreeFillRaw, (value) => value ** 3);
+  const nodeFillStates = [nodeOneFill, nodeTwoFill, nodeThreeFill];
 
   const introVariants = {
     hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
@@ -457,9 +457,67 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
         className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
         variants={introVariants}
       >
-        I use AI to turn ambiguous product and workflow challenges into clear strategies, fast
-        prototypes, and decisions that move teams forward.
+        I build tools and applications with AI to remove friction from my workflow and accelerate
+        real-world problem solving.
       </motion.p>
+
+      <motion.div
+        ref={timelineRef}
+        className="relative mt-10 w-full max-w-[980px] py-4 md:mt-12 md:py-5"
+        variants={introVariants}
+      >
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-[58px] left-[17px] w-px bg-stone-600/14 md:inset-y-[72px] md:left-1/2 md:-translate-x-1/2"
+        />
+        <motion.span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-[58px] left-[17px] w-[2px] origin-top bg-[#f25c2a] md:inset-y-[72px] md:left-1/2 md:-translate-x-1/2"
+          style={{ scaleY: lineFillScale }}
+        />
+
+        <div className="space-y-[5.5rem] md:space-y-[7.5rem]">
+          {aiTimelineEntries.map((entry, index) => {
+            const isLeftCard = index % 2 === 0;
+            const nodeFill = nodeFillStates[index];
+
+            return (
+              <div
+                key={entry.title}
+                className="grid grid-cols-[34px_1fr] items-center gap-x-5 md:grid-cols-[1fr_auto_1fr] md:gap-x-10"
+              >
+                <div
+                  className={cn(
+                    "hidden rounded-none border border-stone-600/10 bg-stone-50/60 p-5 md:block md:max-w-[33ch] md:p-6",
+                    isLeftCard ? "md:col-start-1 md:justify-self-end md:text-right" : "md:col-start-3",
+                  )}
+                >
+                  <p className="text-[18px] leading-tight font-semibold text-stone-600/88">{entry.title}</p>
+                  <p className="mt-2 text-[14px] leading-[1.5] text-stone-600/66">{entry.detail}</p>
+                </div>
+
+                <div className="relative z-10 col-start-1 row-start-1 md:col-start-2 md:justify-self-center">
+                  <div className="relative flex h-9 w-9 items-center justify-center rounded-full border border-stone-600/22 bg-white shadow-[0_0_0_6px_rgba(250,250,249,0.95)] md:h-11 md:w-11">
+                    <motion.span className="absolute inset-0 rounded-full bg-[#f25c2a]" style={{ scale: nodeFill }} />
+                    <Sparkles className="relative z-10 size-[15px] text-stone-600/55 md:size-[17px]" />
+                    <motion.span
+                      className="absolute inset-0 z-20 flex items-center justify-center"
+                      style={{ opacity: nodeFill }}
+                    >
+                      <Sparkles className="size-[15px] text-white md:size-[17px]" />
+                    </motion.span>
+                  </div>
+                </div>
+
+                <div className="col-start-2 row-start-1 rounded-none border border-stone-600/10 bg-stone-50/60 p-4 md:hidden">
+                  <p className="text-[16px] leading-tight font-semibold text-stone-600/88">{entry.title}</p>
+                  <p className="mt-1.5 text-[13px] leading-[1.45] text-stone-600/66">{entry.detail}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
     </motion.section>
   );
 }
@@ -692,7 +750,6 @@ export function PortfolioPage() {
   return (
     <div className="bg-white text-stone-600">
       <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
-      <PageFrameScroll prefersReducedMotion={prefersReducedMotion} />
 
       <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-[56px] px-6 pb-40 md:gap-[72px] md:px-8 md:pb-48 lg:gap-[88px]">
         <HeroDefinition prefersReducedMotion={prefersReducedMotion} />
