@@ -231,21 +231,23 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
           </motion.div>
         </div>
 
-        <aside className="hero-right-rail hidden md:block">
-          <div className="hero-name-rail">
-            <p className="hero-rail-name">Danny</p>
-            <p className="hero-rail-name">Wang</p>
-            <span aria-hidden="true" className="hero-accent-bar" />
-          </div>
+        <div className="hero-right-rail-track hidden md:block">
+          <aside className="hero-right-rail">
+            <div className="hero-name-rail">
+              <p className="hero-rail-name">Danny</p>
+              <p className="hero-rail-name">Wang</p>
+              <span aria-hidden="true" className="hero-accent-bar" />
+            </div>
 
-          <div className="hero-social-stack mt-9 space-y-1.5">
-            {HERO_SOCIAL_LABELS.map((label) => (
-              <p key={label} className="hero-social-link">
-                {label}
-              </p>
-            ))}
+            <div className="hero-social-stack mt-9 space-y-1.5">
+              {HERO_SOCIAL_LABELS.map((label) => (
+                <p key={label} className="hero-social-link">
+                  {label}
+                </p>
+              ))}
+            </div>
+          </aside>
           </div>
-        </aside>
       </div>
     </section>
   );

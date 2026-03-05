@@ -120,7 +120,9 @@
   --hero-tilt-perspective: 1050px;
   --hero-tilt-origin-x: 7%;
   --hero-tilt-origin-y: 36%;
+  --hero-header-offset: 80px;
   --hero-right-rail-top: 470px;
+  --hero-right-rail-track-height: 800px;
   --hero-orange-bar-left: calc(100% + 12px);
   --hero-orange-bar-top: 0px;
   --hero-orange-bar-height: 54px;
@@ -297,10 +299,18 @@
   white-space: nowrap;
 }
 
-@utility hero-right-rail {
+@utility hero-right-rail-track {
   position: absolute;
   right: 0;
-  top: var(--hero-right-rail-top);
+  top: 0;
+  height: var(--hero-right-rail-track-height);
+  width: 204px;
+}
+
+@utility hero-right-rail {
+  position: sticky;
+  right: 0;
+  top: calc(var(--hero-right-rail-top) + var(--hero-header-offset));
   transform: none;
   display: flex;
   flex-direction: column;
