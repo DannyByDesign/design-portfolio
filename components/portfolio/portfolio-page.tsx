@@ -4,7 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { HomeHero } from "@/components/portfolio/hero/home-hero";
 import { cn } from "@/lib/utils";
 
 type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "contact";
@@ -25,11 +26,6 @@ type IndustrialProject = {
     alt: string;
   };
   tone: string;
-};
-
-type DefinitionSense = {
-  index: number;
-  text: string;
 };
 
 type AiTimelineEntry = {
@@ -54,21 +50,6 @@ const sectionByPath: Record<string, PortfolioSection> = {
 };
 
 const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-const heroDefinitionSenses: DefinitionSense[] = [
-  {
-    index: 1,
-    text: "Treats constraints as material and shapes products that feel inevitable.",
-  },
-  {
-    index: 2,
-    text: "Knows when to respect limits, and when to push beyond them in service of the user.",
-  },
-  {
-    index: 3,
-    text: "Believes exceptional teams can create and redefine possibilities.",
-  },
-];
 
 const industrialProjects: IndustrialProject[] = [
   {
@@ -210,112 +191,6 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
         </div>
       </div>
     </header>
-  );
-}
-
-function HeroDefinition({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
-  const reducedMotion = prefersReducedMotion ?? false;
-
-  const heroItemVariants = {
-    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.62, ease: easeOut },
-    },
-  };
-
-  const heroContainerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: reducedMotion ? 0 : 0.12,
-      },
-    },
-  };
-
-  const senseListVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        delayChildren: reducedMotion ? 0 : 0.9,
-        staggerChildren: reducedMotion ? 0 : 0.11,
-      },
-    },
-  };
-
-  const senseRowVariants = {
-    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.55, ease: easeOut },
-    },
-  };
-
-  return (
-    <motion.section
-      id="home"
-      className="scroll-mt-24 relative flex min-h-[calc(100vh-80px)] flex-col items-center pt-[96px] pb-10 text-center md:pt-[120px] md:pb-14"
-      variants={heroContainerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 inset-y-0">
-        <span className="absolute inset-y-8 left-0 w-px bg-stone-600/10 md:inset-y-10" />
-        <span className="absolute inset-y-8 right-0 w-px bg-stone-600/10 md:inset-y-10" />
-      </div>
-
-      <div className="flex flex-col items-center">
-        <motion.h1
-          className="font-serif text-[44px] leading-[1] font-semibold tracking-[-0.03em] text-stone-600/95 md:text-[64px] md:leading-[0.95]"
-          variants={heroItemVariants}
-        >
-          designer
-        </motion.h1>
-        <motion.p className="mt-[10px] text-[14px] tracking-normal text-stone-600/50" variants={heroItemVariants}>
-          /dəˈzīnər/
-        </motion.p>
-      </div>
-
-      <motion.div className="mt-[28px]" variants={heroItemVariants}>
-        <p className="text-[12px] uppercase tracking-[0.22em] text-stone-600/55">
-          SAN FRANCISCO · REMOTE · /DANNY WANG/
-        </p>
-      </motion.div>
-
-      <div className="mt-10 w-full max-w-[820px]">
-        <div className="h-px w-full bg-stone-600/10" />
-        <motion.div
-          className="mx-auto mt-6 w-full max-w-[720px] px-1 pb-8 pl-8 text-left md:mt-8 md:pb-10 md:pl-[44px]"
-          variants={senseListVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {heroDefinitionSenses.map((sense, index) => (
-            <Fragment key={sense.index}>
-              <motion.div
-                className="grid grid-cols-[28px_1fr] items-baseline gap-x-[18px] py-2 text-left md:gap-x-5"
-                variants={senseRowVariants}
-              >
-                <span className="text-[16px] leading-[1.7] font-normal text-stone-600/38 tabular-nums md:text-[17px]">
-                  {sense.index}
-                </span>
-                <p className="max-w-[66ch] text-[16px] leading-[1.7] font-normal text-stone-600/78 md:text-[17px]">
-                  {sense.text}
-                </p>
-              </motion.div>
-              {index < heroDefinitionSenses.length - 1 ? (
-                <motion.div
-                  className="my-4 ml-[46px] w-[80%] border-t border-stone-600/5 md:my-5 md:ml-[48px]"
-                  variants={senseRowVariants}
-                />
-              ) : null}
-            </Fragment>
-          ))}
-        </motion.div>
-      </div>
-    </motion.section>
   );
 }
 
@@ -752,7 +627,7 @@ export function PortfolioPage() {
       <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
 
       <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-[56px] px-6 pb-40 md:gap-[72px] md:px-8 md:pb-48 lg:gap-[88px]">
-        <HeroDefinition prefersReducedMotion={prefersReducedMotion} />
+        <HomeHero />
         <IndustrialDesignSection prefersReducedMotion={prefersReducedMotion} />
         <DesignEngineeringSection prefersReducedMotion={prefersReducedMotion} />
 

@@ -10,8 +10,7 @@
   --radius-lg: calc(var(--radius) + 2px);
 
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Helvetica Neue", Arial;
+    var(--font-ui-sans), "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -115,4 +114,253 @@
 
 @utility hairline {
   @apply bg-border h-px w-full;
+}
+
+@utility hero-home-root {
+  --hero-tilt-perspective: 1050px;
+  --hero-tilt-origin-x: 7%;
+  --hero-tilt-origin-y: 36%;
+  --hero-right-rail-top: 470px;
+  --hero-orange-bar-left: calc(100% + 12px);
+  --hero-orange-bar-top: 0px;
+  --hero-orange-bar-height: 54px;
+  --hero-orange-bar-width: 8px;
+}
+
+@utility hero-tilt-stage {
+  perspective: var(--hero-tilt-perspective);
+  perspective-origin: var(--hero-tilt-origin-x) var(--hero-tilt-origin-y);
+}
+
+@utility hero-main-column {
+  position: relative;
+  max-width: 920px;
+  padding-top: 120px;
+}
+
+@utility hero-tilt-static {
+  transform-style: preserve-3d;
+  transform-origin: left 44%;
+  transform: rotateY(17deg);
+  width: fit-content;
+}
+
+@utility hero-descriptor-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+  width: fit-content;
+}
+
+@utility hero-descriptor-row {
+  position: relative;
+  width: fit-content;
+}
+
+@utility hero-outline-word {
+  font-family:
+    "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  font-size: 100px;
+  line-height: 0.9;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.28px rgb(87 83 78 / 0.4);
+  text-stroke: 1.28px rgb(87 83 78 / 0.4);
+  white-space: nowrap;
+}
+
+@utility hero-filled-slash {
+  position: absolute;
+  left: calc(100% + var(--slash-offset-x, 18px));
+  top: var(--slash-offset-y, 6px);
+  font-family:
+    "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  font-size: 80px;
+  line-height: 0.82;
+  font-weight: 140;
+  color: rgb(87 83 78 / 0.22);
+  transform: rotate(var(--slash-rotation, -2deg));
+  transform-origin: center center;
+}
+
+@utility hero-axis-label {
+  position: absolute;
+  left: calc(100% + var(--axis-offset-x, 34px));
+  top: var(--axis-offset-y, 12px);
+  font-family:
+    "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 520;
+  letter-spacing: -0.008em;
+  color: rgb(87 83 78 / 0.74);
+  white-space: nowrap;
+}
+
+@utility hero-entity-industrial {
+  --slash-offset-x: 18px;
+  --slash-offset-y: 6px;
+  --slash-rotation: -2deg;
+  --axis-offset-x: 34px;
+  --axis-offset-y: 4px;
+}
+
+@utility hero-entity-product {
+  --slash-offset-x: 17px;
+  --slash-offset-y: 6px;
+  --slash-rotation: -2deg;
+  --axis-offset-x: 31px;
+  --axis-offset-y: 12px;
+}
+
+@utility hero-entity-experiential {
+  --slash-offset-x: 20px;
+  --slash-offset-y: 6px;
+  --slash-rotation: -2deg;
+  --axis-offset-x: 36px;
+  --axis-offset-y: 4px;
+}
+
+@utility hero-designer-word {
+  font-family: var(--font-display-serif), "Iowan Old Style", "Times New Roman", Times, serif;
+  font-size: 178px;
+  line-height: 0.86;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: rgb(87 83 78 / 0.92);
+}
+
+@utility hero-pronunciation-line {
+  margin-left: 10px;
+  font-size: 22px;
+  line-height: 1;
+  color: rgb(87 83 78 / 0.86);
+}
+
+@utility hero-definition-block {
+  margin-left: 10px;
+  border-left: 1px solid rgb(87 83 78 / 0.34);
+  padding-left: 32px;
+}
+
+@utility hero-definition-line {
+  max-width: 52ch;
+  font-size: 22px;
+  line-height: 1.28;
+  color: rgb(87 83 78 / 0.86);
+}
+
+@utility hero-definition-line-single {
+  max-width: none;
+  white-space: nowrap;
+}
+
+@utility hero-right-rail {
+  position: absolute;
+  right: 0;
+  top: var(--hero-right-rail-top);
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 204px;
+  text-align: right;
+}
+
+@utility hero-name-rail {
+  position: relative;
+  width: fit-content;
+  margin-left: auto;
+  padding-right: 0;
+  transform: translateY(7px);
+}
+
+@utility hero-social-stack {
+  width: fit-content;
+  margin-left: auto;
+  text-align: right;
+}
+
+@utility hero-rail-name {
+  font-size: 31px;
+  line-height: 0.94;
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  color: rgb(87 83 78 / 0.94);
+}
+
+@utility hero-social-link {
+  font-size: 12px;
+  line-height: 1;
+  color: rgb(87 83 78 / 0.72);
+}
+
+@utility hero-accent-bar {
+  position: absolute;
+  left: var(--hero-orange-bar-left);
+  top: 8px;
+  height: 46px;
+  width: var(--hero-orange-bar-width);
+  background: #f25c2a;
+}
+
+@media (max-width: 767px) {
+  .hero-main-column {
+    padding-top: 84px;
+  }
+
+  .hero-tilt-static {
+    transform: none;
+  }
+
+  .hero-outline-word {
+    font-size: 58px;
+    -webkit-text-stroke: 1.05px rgb(87 83 78 / 0.4);
+    text-stroke: 1.05px rgb(87 83 78 / 0.4);
+  }
+
+  .hero-filled-slash {
+    font-size: 50px;
+    top: 2px;
+  }
+
+  .hero-axis-label {
+    top: 9px;
+    font-size: 14px;
+  }
+
+  .hero-entity-industrial .hero-axis-label,
+  .hero-entity-product .hero-axis-label,
+  .hero-entity-experiential .hero-axis-label {
+    top: 3px;
+  }
+
+  .hero-designer-word {
+    font-size: 118px;
+  }
+
+  .hero-pronunciation-line {
+    margin-left: 2px;
+    font-size: 18px;
+  }
+
+  .hero-definition-block {
+    margin-left: 2px;
+    padding-left: 20px;
+  }
+
+  .hero-definition-line {
+    font-size: 18px;
+  }
+
+  .hero-definition-line-single {
+    white-space: normal;
+  }
 }
