@@ -38,6 +38,8 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
   const lineProgress = useTransform(heroScrollProgress, [0.05, 0.14], [0, 1]);
   const lineOpacity = useTransform(heroScrollProgress, [0.05, 0.07, 0.14], [0, 0, 1]);
   const textOpacity = useTransform(heroScrollProgress, [0.11, 0.2], [0, 1]);
+  const pronunciationOpacity = useTransform(heroScrollProgress, [0.05, 0.11], [0, 1]);
+  const pronunciationY = useTransform(heroScrollProgress, [0.05, 0.11], [10, 0]);
   // Early hero-intro choreography:
   // 1) axis labels dissolve into slashes, 2) descriptor rows collapse into designer.
   // Use the same flatten timeline so this starts immediately with the first scroll movement.
@@ -51,6 +53,8 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
   const desktopLineScale = reducedMotion ? 1 : lineProgress;
   const desktopLineOpacity = reducedMotion ? 1 : lineOpacity;
   const desktopTextOpacity = reducedMotion ? 1 : textOpacity;
+  const desktopPronunciationOpacity = reducedMotion ? 1 : pronunciationOpacity;
+  const desktopPronunciationY = reducedMotion ? 0 : pronunciationY;
   const shouldAnimateFlatten = isDesktop && !reducedMotion;
   const shouldAnimateDescriptorCollapse = isDesktop && !reducedMotion;
 
@@ -180,11 +184,23 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
               </div>
 
               <h1 className="hero-designer-word hero-designer-layer mt-2">designer</h1>
-              <p className="hero-pronunciation-line mt-[24px]">
+              <p className="hero-pronunciation-line mt-[24px] md:hidden">
                 /də&apos;zīnər/
                 <span className="mx-2 font-semibold text-stone-600/74">•</span>
                 <span className="font-semibold text-stone-600/92">noun.</span>
               </p>
+              <motion.p
+                className="hero-pronunciation-line mt-[24px] hidden md:block"
+                style={
+                  shouldAnimateDescriptorCollapse
+                    ? { opacity: desktopPronunciationOpacity, y: desktopPronunciationY }
+                    : undefined
+                }
+              >
+                /də&apos;zīnər/
+                <span className="mx-2 font-semibold text-stone-600/74">•</span>
+                <span className="font-semibold text-stone-600/92">noun.</span>
+              </motion.p>
 
               <div className="hero-definition-block hero-definition-block-static mt-[56px] md:hidden">
                 <p className="hero-definition-line hero-definition-line-single">
