@@ -153,6 +153,11 @@
   width: fit-content;
 }
 
+@utility hero-descriptor-stack-layer {
+  position: relative;
+  z-index: 1;
+}
+
 @utility hero-descriptor-row {
   position: relative;
   width: fit-content;
@@ -235,6 +240,11 @@
   font-weight: 600;
   letter-spacing: -0.012em;
   color: rgb(87 83 78 / 0.92);
+}
+
+@utility hero-designer-layer {
+  position: relative;
+  z-index: 2;
 }
 
 @utility hero-pronunciation-line {

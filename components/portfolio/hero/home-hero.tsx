@@ -35,13 +35,24 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
   const flattenRotateY = useTransform(flattenSource, [0, 1], [17, 0]);
   const flattenPerspective = useTransform(flattenSource, [0, 1], [1050, 22000]);
 
-  const lineProgress = useTransform(heroScrollProgress, [0.02, 0.14], [0, 1]);
-  const lineOpacity = useTransform(heroScrollProgress, [0.02, 0.04, 0.14], [0, 0, 1]);
-  const textOpacity = useTransform(heroScrollProgress, [0.1, 0.22], [0, 1]);
+  const lineProgress = useTransform(heroScrollProgress, [0.05, 0.14], [0, 1]);
+  const lineOpacity = useTransform(heroScrollProgress, [0.05, 0.07, 0.14], [0, 0, 1]);
+  const textOpacity = useTransform(heroScrollProgress, [0.11, 0.2], [0, 1]);
+  // Early hero-intro choreography:
+  // 1) axis labels dissolve into slashes, 2) descriptor rows collapse into designer.
+  // Use the same flatten timeline so this starts immediately with the first scroll movement.
+  const axisLabelX = useTransform(flattenSource, [0, 0.05], [0, -16]);
+  const axisLabelOpacity = useTransform(flattenSource, [0, 0.045], [1, 0]);
+  const descriptorRowOpacity = useTransform(flattenSource, [0.06, 0.19], [1, 0]);
+  const descriptorRowScale = useTransform(flattenSource, [0.06, 0.19], [1, 0.986]);
+  const industrialRowY = useTransform(flattenSource, [0.06, 0.19], [0, 176]);
+  const productRowY = useTransform(flattenSource, [0.06, 0.19], [0, 88]);
+  const experientialRowY = useTransform(flattenSource, [0.06, 0.19], [0, 10]);
   const desktopLineScale = reducedMotion ? 1 : lineProgress;
   const desktopLineOpacity = reducedMotion ? 1 : lineOpacity;
   const desktopTextOpacity = reducedMotion ? 1 : textOpacity;
   const shouldAnimateFlatten = isDesktop && !reducedMotion;
+  const shouldAnimateDescriptorCollapse = isDesktop && !reducedMotion;
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -73,33 +84,102 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
               className="hero-tilt-static"
               style={shouldAnimateFlatten ? { rotateY: flattenRotateY } : undefined}
             >
-              <div className="hero-descriptor-stack">
-                <div className="hero-descriptor-row hero-entity-industrial">
+              <div className="hero-descriptor-stack hero-descriptor-stack-layer">
+                <motion.div
+                  className="hero-descriptor-row hero-entity-industrial"
+                  style={
+                    shouldAnimateDescriptorCollapse
+                      ? {
+                          y: industrialRowY,
+                          opacity: descriptorRowOpacity,
+                          scale: descriptorRowScale,
+                        }
+                      : undefined
+                  }
+                >
                   <p className="hero-outline-word">industrial</p>
                   <span className="hero-filled-slash" aria-hidden="true">
                     {"\\"}
                   </span>
-                  <span className="hero-axis-label">physical</span>
-                </div>
+                  <motion.span
+                    className="hero-axis-label"
+                    style={
+                      shouldAnimateDescriptorCollapse
+                        ? {
+                            x: axisLabelX,
+                            opacity: axisLabelOpacity,
+                          }
+                        : undefined
+                    }
+                  >
+                    physical
+                  </motion.span>
+                </motion.div>
 
-                <div className="hero-descriptor-row hero-entity-product">
+                <motion.div
+                  className="hero-descriptor-row hero-entity-product"
+                  style={
+                    shouldAnimateDescriptorCollapse
+                      ? {
+                          y: productRowY,
+                          opacity: descriptorRowOpacity,
+                          scale: descriptorRowScale,
+                        }
+                      : undefined
+                  }
+                >
                   <p className="hero-outline-word">product</p>
                   <span className="hero-filled-slash" aria-hidden="true">
                     {"\\"}
                   </span>
-                  <span className="hero-axis-label">digital</span>
-                </div>
+                  <motion.span
+                    className="hero-axis-label"
+                    style={
+                      shouldAnimateDescriptorCollapse
+                        ? {
+                            x: axisLabelX,
+                            opacity: axisLabelOpacity,
+                          }
+                        : undefined
+                    }
+                  >
+                    digital
+                  </motion.span>
+                </motion.div>
 
-                <div className="hero-descriptor-row hero-entity-experiential">
+                <motion.div
+                  className="hero-descriptor-row hero-entity-experiential"
+                  style={
+                    shouldAnimateDescriptorCollapse
+                      ? {
+                          y: experientialRowY,
+                          opacity: descriptorRowOpacity,
+                          scale: descriptorRowScale,
+                        }
+                      : undefined
+                  }
+                >
                   <p className="hero-outline-word">experiential</p>
                   <span className="hero-filled-slash" aria-hidden="true">
                     {"\\"}
                   </span>
-                  <span className="hero-axis-label">emotional</span>
-                </div>
+                  <motion.span
+                    className="hero-axis-label"
+                    style={
+                      shouldAnimateDescriptorCollapse
+                        ? {
+                            x: axisLabelX,
+                            opacity: axisLabelOpacity,
+                          }
+                        : undefined
+                    }
+                  >
+                    emotional
+                  </motion.span>
+                </motion.div>
               </div>
 
-              <h1 className="hero-designer-word mt-2">designer</h1>
+              <h1 className="hero-designer-word hero-designer-layer mt-2">designer</h1>
               <p className="hero-pronunciation-line mt-[24px]">
                 /də&apos;zīnər/
                 <span className="mx-2 font-semibold text-stone-600/74">•</span>
