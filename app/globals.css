@@ -246,8 +246,33 @@
 
 @utility hero-definition-block {
   margin-left: 10px;
-  border-left: 1px solid rgb(87 83 78 / 0.34);
   padding-left: 32px;
+}
+
+@utility hero-definition-block-static {
+  border-left: 1px solid rgb(87 83 78 / 0.34);
+}
+
+@utility hero-definition-block-animated {
+  position: relative;
+}
+
+@utility hero-definition-line-animated {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgb(87 83 78 / 0.34);
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  pointer-events: none;
+}
+
+@utility hero-definition-copy {
+  opacity: 1;
 }
 
 @utility hero-definition-line {

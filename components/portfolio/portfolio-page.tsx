@@ -646,7 +646,7 @@ export function PortfolioPage() {
       <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
 
       <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-[56px] px-6 pb-40 md:gap-[72px] md:px-8 md:pb-48 lg:gap-[88px]">
-        <HomeHero />
+        <HomeHero prefersReducedMotion={prefersReducedMotion} />
         <IndustrialDesignSection prefersReducedMotion={prefersReducedMotion} />
         <DesignEngineeringSection prefersReducedMotion={prefersReducedMotion} />
 
