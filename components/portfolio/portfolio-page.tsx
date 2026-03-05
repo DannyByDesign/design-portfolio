@@ -196,6 +196,21 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
 
 function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
   const reducedMotion = prefersReducedMotion ?? false;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(media.matches);
+    update();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", update);
+      return () => media.removeEventListener("change", update);
+    }
+
+    media.addListener(update);
+    return () => media.removeListener(update);
+  }, []);
 
   const introVariants = {
     hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
@@ -224,13 +239,17 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
     },
   };
 
+  const sectionViewport = isMobile
+    ? { once: true, amount: 0.02 as const, margin: "0px 0px -8% 0px" }
+    : { once: true, amount: 0.24 as const };
+
   return (
     <motion.section
       id="industrial-design"
       className="scroll-mt-24 pt-14 md:pt-20"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.24 }}
+      viewport={sectionViewport}
     >
       <motion.p className="definition-kicker" variants={introVariants}>
         physical experiences

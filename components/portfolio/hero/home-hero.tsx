@@ -80,11 +80,6 @@ export function HomeHero({}: HomeHeroProps) {
         </aside>
       </div>
 
-      <div className="mt-10 flex items-center gap-6 text-[12px] text-stone-600/72 md:hidden">
-        {HERO_SOCIAL_LABELS.map((label) => (
-          <p key={label}>{label}</p>
-        ))}
-      </div>
     </section>
   );
 }
