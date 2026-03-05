@@ -25,6 +25,7 @@ const HERO_SOCIAL_LABELS = ["LinkedIn", "Twitter/X", "Instagram"];
 export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProps) {
   const heroRef = useRef<HTMLElement | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
+  const hasWindow = typeof window !== "undefined";
   const reducedMotion = prefersReducedMotion ?? false;
   const fallbackFlattenProgress = useMotionValue(0);
   const flattenSource = flattenProgress ?? fallbackFlattenProgress;
@@ -32,7 +33,7 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const flattenRotateY = useTransform(flattenSource, [0, 1], [17, 0]);
+  const flattenRotateY = useTransform(flattenSource, [0, 0.86], [17, 0]);
   const flattenPerspective = useTransform(flattenSource, [0, 1], [1050, 22000]);
 
   const lineProgress = useTransform(heroScrollProgress, [0.05, 0.14], [0, 1]);
@@ -184,23 +185,25 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
               </div>
 
               <h1 className="hero-designer-word hero-designer-layer mt-2">designer</h1>
-              <p className="hero-pronunciation-line mt-[24px] md:hidden">
-                /də&apos;zīnər/
-                <span className="mx-2 font-semibold text-stone-600/74">•</span>
-                <span className="font-semibold text-stone-600/92">noun.</span>
-              </p>
-              <motion.p
-                className="hero-pronunciation-line mt-[24px] hidden md:block"
-                style={
-                  shouldAnimateDescriptorCollapse
-                    ? { opacity: desktopPronunciationOpacity, y: desktopPronunciationY }
-                    : undefined
-                }
-              >
-                /də&apos;zīnər/
-                <span className="mx-2 font-semibold text-stone-600/74">•</span>
-                <span className="font-semibold text-stone-600/92">noun.</span>
-              </motion.p>
+              <div style={{ visibility: hasWindow ? "visible" : "hidden" }} suppressHydrationWarning>
+                <p className="hero-pronunciation-line mt-[24px] md:hidden">
+                  /də&apos;zīnər/
+                  <span className="mx-2 font-semibold text-stone-600/74">•</span>
+                  <span className="font-semibold text-stone-600/92">noun.</span>
+                </p>
+                <motion.p
+                  className="hero-pronunciation-line hero-pronunciation-line-animated mt-[24px] hidden md:block"
+                  style={
+                    shouldAnimateDescriptorCollapse
+                      ? { opacity: desktopPronunciationOpacity, y: desktopPronunciationY }
+                      : undefined
+                  }
+                >
+                  /də&apos;zīnər/
+                  <span className="mx-2 font-semibold text-stone-600/74">•</span>
+                  <span className="font-semibold text-stone-600/92">noun.</span>
+                </motion.p>
+              </div>
 
               <div className="hero-definition-block hero-definition-block-static mt-[56px] md:hidden">
                 <p className="hero-definition-line hero-definition-line-single">

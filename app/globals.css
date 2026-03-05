@@ -256,6 +256,11 @@
   color: rgb(87 83 78 / 0.86);
 }
 
+@utility hero-pronunciation-line-animated {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
 @utility hero-definition-block {
   margin-left: 10px;
   padding-left: 32px;
@@ -410,5 +415,12 @@
 
   .hero-definition-line-single {
     white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-pronunciation-line-animated {
+    opacity: 1;
+    transform: none;
   }
 }
