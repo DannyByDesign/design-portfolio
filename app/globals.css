@@ -208,7 +208,7 @@
   --slash-offset-y: 6px;
   --slash-rotation: -2deg;
   --axis-offset-x: 34px;
-  --axis-offset-y: 4px;
+  --axis-offset-y: 6px;
 }
 
 @utility hero-entity-product {
@@ -224,7 +224,7 @@
   --slash-offset-y: 6px;
   --slash-rotation: -2deg;
   --axis-offset-x: 36px;
-  --axis-offset-y: 4px;
+  --axis-offset-y: 6px;
 }
 
 @utility hero-designer-word {
@@ -361,10 +361,13 @@
     font-size: 14px;
   }
 
-  .hero-entity-industrial .hero-axis-label,
-  .hero-entity-product .hero-axis-label,
-  .hero-entity-experiential .hero-axis-label {
+  .hero-entity-product .hero-axis-label {
     top: 3px;
+  }
+
+  .hero-entity-industrial .hero-axis-label,
+  .hero-entity-experiential .hero-axis-label {
+    top: 5px;
   }
 
   .hero-designer-word {

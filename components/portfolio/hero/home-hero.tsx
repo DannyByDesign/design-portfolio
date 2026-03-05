@@ -1,10 +1,17 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import {
+  motion,
+  useMotionValue,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 type HomeHeroProps = {
   prefersReducedMotion?: boolean | null;
+  flattenProgress?: MotionValue<number>;
   contactRightEdge?: number | null;
 };
 
@@ -15,20 +22,40 @@ const HERO_DEFINITION_PARAGRAPHS = [
 
 const HERO_SOCIAL_LABELS = ["LinkedIn", "Twitter/X", "Instagram"];
 
-export function HomeHero({ prefersReducedMotion }: HomeHeroProps) {
+export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProps) {
   const heroRef = useRef<HTMLElement | null>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
   const reducedMotion = prefersReducedMotion ?? false;
+  const fallbackFlattenProgress = useMotionValue(0);
+  const flattenSource = flattenProgress ?? fallbackFlattenProgress;
   const { scrollYProgress: heroScrollProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
+  const flattenRotateY = useTransform(flattenSource, [0, 1], [17, 0]);
+  const flattenPerspective = useTransform(flattenSource, [0, 1], [1050, 22000]);
 
-  const lineProgress = useTransform(heroScrollProgress, [0.1, 0.28], [0, 1]);
-  const lineOpacity = useTransform(heroScrollProgress, [0.1, 0.13, 0.28], [0, 0, 1]);
-  const textOpacity = useTransform(heroScrollProgress, [0.24, 0.39], [0, 1]);
+  const lineProgress = useTransform(heroScrollProgress, [0.02, 0.14], [0, 1]);
+  const lineOpacity = useTransform(heroScrollProgress, [0.02, 0.04, 0.14], [0, 0, 1]);
+  const textOpacity = useTransform(heroScrollProgress, [0.1, 0.22], [0, 1]);
   const desktopLineScale = reducedMotion ? 1 : lineProgress;
   const desktopLineOpacity = reducedMotion ? 1 : lineOpacity;
   const desktopTextOpacity = reducedMotion ? 1 : textOpacity;
+  const shouldAnimateFlatten = isDesktop && !reducedMotion;
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(media.matches);
+    update();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", update);
+      return () => media.removeEventListener("change", update);
+    }
+
+    media.addListener(update);
+    return () => media.removeListener(update);
+  }, []);
 
   return (
     <section
@@ -38,8 +65,14 @@ export function HomeHero({ prefersReducedMotion }: HomeHeroProps) {
     >
       <div className="relative min-h-[calc(100vh-80px)]">
         <div className="hero-main-column">
-          <div className="hero-tilt-stage">
-            <div className="hero-tilt-static">
+          <motion.div
+            className="hero-tilt-stage"
+            style={shouldAnimateFlatten ? { perspective: flattenPerspective } : undefined}
+          >
+            <motion.div
+              className="hero-tilt-static"
+              style={shouldAnimateFlatten ? { rotateY: flattenRotateY } : undefined}
+            >
               <div className="hero-descriptor-stack">
                 <div className="hero-descriptor-row hero-entity-industrial">
                   <p className="hero-outline-word">industrial</p>
@@ -98,8 +131,8 @@ export function HomeHero({ prefersReducedMotion }: HomeHeroProps) {
                   <p className="hero-definition-line mt-4">{HERO_DEFINITION_PARAGRAPHS[1]}</p>
                 </motion.div>
               </motion.div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
 
         <aside className="hero-right-rail hidden md:block">

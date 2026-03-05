@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -194,9 +194,21 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
   );
 }
 
-function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
+function IndustrialDesignSection({
+  prefersReducedMotion,
+  introProgress,
+  sectionRef,
+}: {
+  prefersReducedMotion: boolean | null;
+  introProgress?: MotionValue<number>;
+  sectionRef?: RefObject<HTMLElement | null>;
+}) {
   const reducedMotion = prefersReducedMotion ?? false;
   const [isMobile, setIsMobile] = useState(false);
+  const fallbackIntroProgress = useMotionValue(1);
+  const introSource = introProgress ?? fallbackIntroProgress;
+  const introFadeOpacity = useTransform(introSource, [0, 1], [0, 1]);
+  const introTranslateY = useTransform(introSource, [0, 1], [8, 0]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 767px)");
@@ -245,24 +257,52 @@ function IndustrialDesignSection({ prefersReducedMotion }: { prefersReducedMotio
 
   return (
     <motion.section
+      ref={sectionRef}
       id="industrial-design"
       className="scroll-mt-24 pt-14 md:pt-20"
       initial="hidden"
       whileInView="visible"
       viewport={sectionViewport}
     >
-      <motion.p className="definition-kicker" variants={introVariants}>
+      <motion.p
+        className="definition-kicker"
+        variants={introVariants}
+        style={
+          reducedMotion
+            ? undefined
+            : {
+                opacity: introFadeOpacity,
+                y: introTranslateY,
+              }
+        }
+      >
         physical experiences
       </motion.p>
       <motion.h2
         className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={introVariants}
+        style={
+          reducedMotion
+            ? undefined
+            : {
+                opacity: introFadeOpacity,
+                y: introTranslateY,
+              }
+        }
       >
         industrial design
       </motion.h2>
       <motion.p
         className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
         variants={introVariants}
+        style={
+          reducedMotion
+            ? undefined
+            : {
+                opacity: introFadeOpacity,
+                y: introTranslateY,
+              }
+        }
       >
         I design both concept explorations and production-ready products, from early form studies
         to manufacturing handoff.
@@ -470,14 +510,52 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
 export function PortfolioPage() {
   const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
+  const industrialSectionRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const programmaticTimerRef = useRef<number | null>(null);
   const activeSectionRef = useRef<PortfolioSection>("home");
   const pendingSectionRef = useRef<PortfolioSection | null>(null);
   const programmaticScrollRef = useRef(false);
+  const [handoffScrollY, setHandoffScrollY] = useState(1);
+  const [introFadeScrollSpan, setIntroFadeScrollSpan] = useState(120);
+  const { scrollY } = useScroll();
+  // Shared choreography timeline:
+  // - flatten starts immediately at scrollY=0
+  // - flatten reaches 1 exactly when industrial intro fade starts
+  const heroFlattenProgress = useTransform(scrollY, [0, handoffScrollY], [0, 1]);
+  const industrialIntroProgress = useTransform(
+    scrollY,
+    [handoffScrollY, handoffScrollY + introFadeScrollSpan],
+    [0, 1],
+  );
   const [activeSection, setActiveSection] = useState<PortfolioSection>(() =>
     sectionFromPath(pathname ?? "/"),
   );
+
+  useEffect(() => {
+    const measureHandoffTiming = () => {
+      const industrialSection = industrialSectionRef.current;
+      if (!industrialSection) {
+        return;
+      }
+
+      const industrialTop = industrialSection.getBoundingClientRect().top + window.scrollY;
+      // Match the previous industrial reveal anchor: section top reaching ~52% viewport height.
+      const nextHandoff = Math.max(1, industrialTop - window.innerHeight * 0.52);
+      const nextIntroSpan = Math.max(96, window.innerHeight * 0.13);
+      setHandoffScrollY(nextHandoff);
+      setIntroFadeScrollSpan(nextIntroSpan);
+    };
+
+    measureHandoffTiming();
+    const rafId = window.requestAnimationFrame(measureHandoffTiming);
+    window.addEventListener("resize", measureHandoffTiming);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", measureHandoffTiming);
+    };
+  }, []);
 
   const syncPath = useCallback((section: PortfolioSection, mode: "push" | "replace") => {
     const nextPath = routeBySection[section];
@@ -646,8 +724,15 @@ export function PortfolioPage() {
       <Header activeSection={activeSection} onNavigateSection={handleSectionNav} />
 
       <main className="mx-auto flex w-full max-w-[1040px] flex-col gap-[56px] px-6 pb-40 md:gap-[72px] md:px-8 md:pb-48 lg:gap-[88px]">
-        <HomeHero prefersReducedMotion={prefersReducedMotion} />
-        <IndustrialDesignSection prefersReducedMotion={prefersReducedMotion} />
+        <HomeHero
+          prefersReducedMotion={prefersReducedMotion}
+          flattenProgress={heroFlattenProgress}
+        />
+        <IndustrialDesignSection
+          prefersReducedMotion={prefersReducedMotion}
+          introProgress={industrialIntroProgress}
+          sectionRef={industrialSectionRef}
+        />
         <DesignEngineeringSection prefersReducedMotion={prefersReducedMotion} />
 
         <ContactSection prefersReducedMotion={prefersReducedMotion} />
