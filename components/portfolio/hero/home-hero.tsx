@@ -25,7 +25,6 @@ const HERO_SOCIAL_LABELS = ["LinkedIn", "Twitter/X", "Instagram"];
 export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProps) {
   const heroRef = useRef<HTMLElement | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
-  const hasWindow = typeof window !== "undefined";
   const reducedMotion = prefersReducedMotion ?? false;
   const fallbackFlattenProgress = useMotionValue(0);
   const flattenSource = flattenProgress ?? fallbackFlattenProgress;
@@ -185,7 +184,7 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
               </div>
 
               <h1 className="hero-designer-word hero-designer-layer mt-2">designer</h1>
-              <div style={{ visibility: hasWindow ? "visible" : "hidden" }} suppressHydrationWarning>
+              <div>
                 <p className="hero-pronunciation-line mt-[24px] md:hidden">
                   /də&apos;zīnər/
                   <span className="mx-2 font-semibold text-stone-600/74">•</span>

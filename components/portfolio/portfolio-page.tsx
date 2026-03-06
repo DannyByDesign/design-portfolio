@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
@@ -21,6 +22,7 @@ type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "c
 type IndustrialProject = {
   title: string;
   subtitle: string;
+  href: string;
   image: {
     src: string;
     alt: string;
@@ -55,36 +57,42 @@ const industrialProjects: IndustrialProject[] = [
   {
     title: "Concept Mobility System",
     subtitle: "Bold interaction concept.",
+    href: "/industrial-design/concept-mobility-system",
     image: { src: "/window.svg", alt: "Placeholder visual for concept mobility system" },
     tone: "from-zinc-100 to-zinc-50",
   },
   {
     title: "Adaptive Kitchen Tooling",
     subtitle: "Ergonomic modular studies.",
+    href: "/industrial-design/adaptive-kitchen-tooling",
     image: { src: "/globe.svg", alt: "Placeholder visual for adaptive kitchen tooling" },
     tone: "from-stone-100 to-zinc-50",
   },
   {
     title: "Wearable Utility Concept",
     subtitle: "Comfort-first form studies.",
+    href: "/industrial-design/wearable-utility-concept",
     image: { src: "/file.svg", alt: "Placeholder visual for wearable utility concept" },
     tone: "from-zinc-100 to-neutral-50",
   },
   {
     title: "Consumer Device Program",
     subtitle: "Sketch-to-shelf execution.",
+    href: "/industrial-design/consumer-device-program",
     image: { src: "/window.svg", alt: "Placeholder visual for consumer device program" },
     tone: "from-zinc-100 to-zinc-50",
   },
   {
     title: "Household Product Line",
     subtitle: "Manufacturing-ready product line.",
+    href: "/industrial-design/household-product-line",
     image: { src: "/globe.svg", alt: "Placeholder visual for household product line" },
     tone: "from-stone-100 to-zinc-50",
   },
   {
     title: "Accessory System Design",
     subtitle: "Detail-led production handoff.",
+    href: "/industrial-design/accessory-system-design",
     image: { src: "/file.svg", alt: "Placeholder visual for accessory system design" },
     tone: "from-zinc-100 to-neutral-50",
   },
@@ -167,13 +175,14 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
+                id="mobile-nav-trigger"
                 aria-label="Open navigation menu"
                 className="inline-flex h-11 w-11 items-center justify-center text-stone-600/70 transition-colors hover:text-stone-600/90"
               >
                 <Menu className="size-5" aria-hidden="true" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52 border-stone-600/10">
+            <DropdownMenuContent id="mobile-nav-content" align="end" className="w-52 border-stone-600/10">
               {navItems.map((item) => (
                 <DropdownMenuItem
                   key={item.section}
@@ -255,6 +264,41 @@ function IndustrialDesignSection({
     ? { once: true, amount: 0.02 as const, margin: "0px 0px -8% 0px" }
     : { once: true, amount: 0.24 as const };
 
+  const renderProjectCard = (project: IndustrialProject, mobile: boolean) => (
+    <Link
+      href={project.href}
+      aria-label={`Open ${project.title} project`}
+      className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-2"
+    >
+      <Card className="group relative overflow-hidden rounded-none border-stone-600/10 bg-white p-0">
+        <div className={cn("relative aspect-[1/1] overflow-hidden bg-gradient-to-b", project.tone)}>
+          <Image
+            src={project.image.src}
+            alt={project.image.alt}
+            fill
+            sizes="(min-width: 1024px) 280px, (min-width: 768px) 45vw, 100vw"
+            className={cn(
+              "object-contain p-10 md:p-11",
+              !mobile &&
+                "md:transition-transform md:duration-900 md:ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:scale-[1.14]",
+            )}
+          />
+          {!mobile ? (
+            <>
+              <div className="absolute inset-0 bg-stone-600/5 md:transition-colors md:duration-500 md:group-hover:bg-stone-600/58" />
+              <div className="absolute inset-0 hidden flex-col items-center justify-center px-6 text-center text-white md:flex md:opacity-0 md:transition-opacity md:duration-700 md:group-hover:opacity-100">
+                <p className="text-[17px] leading-tight font-bold tracking-[-0.01em]">{project.title}</p>
+                <p className="mt-2 max-w-[18ch] text-[14px] leading-[1.3] text-white/88">
+                  {project.subtitle}
+                </p>
+              </div>
+            </>
+          ) : null}
+        </div>
+      </Card>
+    </Link>
+  );
+
   return (
     <motion.section
       ref={sectionRef}
@@ -308,40 +352,24 @@ function IndustrialDesignSection({
         to manufacturing handoff.
       </motion.p>
 
-      <motion.div
-        className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3"
-        variants={cardGridVariants}
-      >
-        {industrialProjects.map((project) => (
-          <motion.article key={project.title} variants={cardItemVariants}>
-            <Card className="group relative overflow-hidden rounded-none border-stone-600/10 bg-white p-0">
-              <div
-                className={cn(
-                  "relative aspect-[1/1] overflow-hidden bg-gradient-to-b",
-                  project.tone,
-                )}
-              >
-                <Image
-                  src={project.image.src}
-                  alt={project.image.alt}
-                  fill
-                  sizes="(min-width: 1024px) 280px, (min-width: 768px) 45vw, 100vw"
-                  className="object-contain p-10 transition-transform duration-900 ease-[cubic-bezier(0.16,1,0.3,1)] md:p-11 md:group-hover:scale-[1.14]"
-                />
-                <div className="absolute inset-0 bg-stone-600/5 transition-colors duration-500 md:group-hover:bg-stone-600/58" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white opacity-100 transition-opacity duration-700 md:opacity-0 md:group-hover:opacity-100">
-                  <p className="text-[17px] leading-tight font-bold tracking-[-0.01em]">
-                    {project.title}
-                  </p>
-                  <p className="mt-2 max-w-[18ch] text-[14px] leading-[1.3] text-white/88">
-                    {project.subtitle}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </motion.article>
-        ))}
-      </motion.div>
+      {isMobile ? (
+        <div className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3">
+          {industrialProjects.map((project) => (
+            <article key={project.title}>{renderProjectCard(project, true)}</article>
+          ))}
+        </div>
+      ) : (
+        <motion.div
+          className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3"
+          variants={cardGridVariants}
+        >
+          {industrialProjects.map((project) => (
+            <motion.article key={project.title} variants={cardItemVariants}>
+              {renderProjectCard(project, false)}
+            </motion.article>
+          ))}
+        </motion.div>
+      )}
     </motion.section>
   );
 }
