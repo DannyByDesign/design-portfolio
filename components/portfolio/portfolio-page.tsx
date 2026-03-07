@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { Menu, Sparkles } from "lucide-react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ArrowUpRight, Github, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
 import { Card } from "@/components/ui/card";
@@ -30,9 +30,24 @@ type IndustrialProject = {
   tone: string;
 };
 
-type AiTimelineEntry = {
+type DesignEngineeringProjectCard = {
+  id: string;
   title: string;
-  detail: string;
+  description: string;
+  internalHref: string;
+  image: {
+    src: string;
+    alt: string;
+    tone: string;
+  };
+  externalHref?: string;
+  githubHref?: string;
+};
+
+type DesignEngineeringTimelineRow = {
+  id: string;
+  leftCard: DesignEngineeringProjectCard;
+  rightCard: DesignEngineeringProjectCard;
 };
 
 const sectionIds: PortfolioSection[] = ["home", "industrial-design", "design-engineering", "contact"];
@@ -98,18 +113,87 @@ const industrialProjects: IndustrialProject[] = [
   },
 ];
 
-const aiTimelineEntries: AiTimelineEntry[] = [
+const designEngineeringTimelineRows: DesignEngineeringTimelineRow[] = [
   {
-    title: "Workflow Automation",
-    detail: "I build AI tools that remove repetitive work and keep project momentum high.",
+    id: "row-1",
+    leftCard: {
+      id: "workflow-automation-suite",
+      title: "Workflow Automation Suite",
+      description: "A collection of AI helpers that remove repetitive production and handoff tasks.",
+      internalHref: "/design-engineering#workflow-automation-suite",
+      externalHref: "https://example.com/workflow-automation-suite",
+      githubHref: "https://github.com/example/workflow-automation-suite",
+      image: {
+        src: "/window.svg",
+        alt: "Visualization for workflow automation suite project",
+        tone: "from-zinc-100 via-stone-100 to-zinc-50",
+      },
+    },
+    rightCard: {
+      id: "ux-research-copilot",
+      title: "UX Research Copilot",
+      description: "A prompt-driven workspace for synthesis, tagging, and insight extraction from interviews.",
+      internalHref: "/design-engineering#ux-research-copilot",
+      externalHref: "https://example.com/ux-research-copilot",
+      image: {
+        src: "/globe.svg",
+        alt: "Visualization for UX research copilot project",
+        tone: "from-stone-100 via-zinc-100 to-neutral-50",
+      },
+    },
   },
   {
-    title: "Rapid Prototyping",
-    detail: "From idea to interactive proof, I use AI to test directions and validate decisions fast.",
+    id: "row-2",
+    leftCard: {
+      id: "rapid-prototype-lab",
+      title: "Rapid Prototype Lab",
+      description: "An AI-assisted prototyping flow used to validate interaction directions in hours.",
+      internalHref: "/design-engineering#rapid-prototype-lab",
+      image: {
+        src: "/file.svg",
+        alt: "Visualization for rapid prototype lab project",
+        tone: "from-zinc-100 via-stone-100 to-zinc-50",
+      },
+    },
+    rightCard: {
+      id: "content-system-generator",
+      title: "Content System Generator",
+      description: "A pipeline that drafts and normalizes product content across feature surfaces.",
+      internalHref: "/design-engineering#content-system-generator",
+      externalHref: "https://example.com/content-system-generator",
+      githubHref: "https://github.com/example/content-system-generator",
+      image: {
+        src: "/window.svg",
+        alt: "Visualization for content system generator project",
+        tone: "from-stone-100 via-zinc-100 to-zinc-50",
+      },
+    },
   },
   {
-    title: "Production Delivery",
-    detail: "I translate AI-assisted concepts into practical applications teams can adopt and scale.",
+    id: "row-3",
+    leftCard: {
+      id: "delivery-readiness-tooling",
+      title: "Delivery Readiness Tooling",
+      description: "A quality gate utility that flags implementation risks before engineering handoff.",
+      internalHref: "/design-engineering#delivery-readiness-tooling",
+      externalHref: "https://example.com/delivery-readiness-tooling",
+      image: {
+        src: "/globe.svg",
+        alt: "Visualization for delivery readiness tooling project",
+        tone: "from-zinc-100 via-stone-100 to-neutral-50",
+      },
+    },
+    rightCard: {
+      id: "ai-support-console",
+      title: "AI Support Console",
+      description: "An internal operations interface that accelerates diagnosis and support workflows.",
+      internalHref: "/design-engineering#ai-support-console",
+      image: {
+        src: "/file.svg",
+        alt: "Visualization for AI support console project",
+        tone: "from-stone-100 via-zinc-100 to-neutral-50",
+      },
+    },
   },
 ];
 
@@ -205,19 +289,13 @@ function Header({ activeSection, onNavigateSection }: HeaderProps) {
 
 function IndustrialDesignSection({
   prefersReducedMotion,
-  introProgress,
   sectionRef,
 }: {
   prefersReducedMotion: boolean | null;
-  introProgress?: MotionValue<number>;
   sectionRef?: RefObject<HTMLElement | null>;
 }) {
   const reducedMotion = prefersReducedMotion ?? false;
   const [isMobile, setIsMobile] = useState(false);
-  const fallbackIntroProgress = useMotionValue(1);
-  const introSource = introProgress ?? fallbackIntroProgress;
-  const introFadeOpacity = useTransform(introSource, [0, 1], [0, 1]);
-  const introTranslateY = useTransform(introSource, [0, 1], [8, 0]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 767px)");
@@ -270,13 +348,13 @@ function IndustrialDesignSection({
       aria-label={`Open ${project.title} project`}
       className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-2"
     >
-      <Card className="group relative overflow-hidden rounded-none border-stone-600/10 bg-white p-0">
-        <div className={cn("relative aspect-[1/1] overflow-hidden bg-gradient-to-b", project.tone)}>
+      <Card className="group relative h-[300px] w-full max-w-full overflow-hidden rounded-none border-stone-600/10 bg-white p-0 md:h-[344px]">
+        <div className={cn("relative h-full w-full overflow-hidden bg-gradient-to-b", project.tone)}>
           <Image
             src={project.image.src}
             alt={project.image.alt}
             fill
-            sizes="(min-width: 1024px) 280px, (min-width: 768px) 45vw, 100vw"
+            sizes="(min-width: 768px) 48vw, 100vw"
             className={cn(
               "object-contain p-10 md:p-11",
               !mobile &&
@@ -303,91 +381,228 @@ function IndustrialDesignSection({
     <motion.section
       ref={sectionRef}
       id="industrial-design"
-      className="scroll-mt-24 pt-14 md:pt-20"
+      className="scroll-mt-20 pt-10 md:pt-14"
       initial="hidden"
       whileInView="visible"
       viewport={sectionViewport}
     >
-      <motion.p
-        className="definition-kicker"
-        variants={introVariants}
-        style={
-          reducedMotion
-            ? undefined
-            : {
-                opacity: introFadeOpacity,
-                y: introTranslateY,
-              }
-        }
-      >
+      <motion.p className="definition-kicker" variants={introVariants}>
         physical experiences
       </motion.p>
       <motion.h2
         className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={introVariants}
-        style={
-          reducedMotion
-            ? undefined
-            : {
-                opacity: introFadeOpacity,
-                y: introTranslateY,
-              }
-        }
       >
         industrial design
       </motion.h2>
       <motion.p
         className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
         variants={introVariants}
-        style={
-          reducedMotion
-            ? undefined
-            : {
-                opacity: introFadeOpacity,
-                y: introTranslateY,
-              }
-        }
       >
         I design both concept explorations and production-ready products, from early form studies
         to manufacturing handoff.
       </motion.p>
 
-      {isMobile ? (
-        <div className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3">
-          {industrialProjects.map((project) => (
-            <article key={project.title}>{renderProjectCard(project, true)}</article>
-          ))}
-        </div>
-      ) : (
-        <motion.div
-          className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3"
-          variants={cardGridVariants}
-        >
-          {industrialProjects.map((project) => (
-            <motion.article key={project.title} variants={cardItemVariants}>
-              {renderProjectCard(project, false)}
-            </motion.article>
-          ))}
-        </motion.div>
-      )}
+      <motion.div
+        className="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-10"
+        variants={cardGridVariants}
+      >
+        {industrialProjects.map((project) => (
+          <motion.article key={project.title} variants={cardItemVariants}>
+            {renderProjectCard(project, isMobile)}
+          </motion.article>
+        ))}
+      </motion.div>
     </motion.section>
   );
 }
 
 function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
   const reducedMotion = prefersReducedMotion ?? false;
-  const timelineRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: timelineRef,
-    offset: ["start 92%", "end 20%"],
-  });
-  const timelineProgress = scrollYProgress;
-  const lineFillScale = useTransform(timelineProgress, [0.06, 0.62], [0, 1]);
-  const nodeOneFill = useTransform(lineFillScale, [0.04, 0.16], [0, 1]);
-  const nodeTwoFill = useTransform(lineFillScale, [0.5, 0.64], [0, 1]);
-  const nodeThreeFillRaw = useTransform(lineFillScale, [0.97, 1], [0, 1]);
-  const nodeThreeFill = useTransform(nodeThreeFillRaw, (value) => value ** 3);
-  const nodeFillStates = [nodeOneFill, nodeTwoFill, nodeThreeFill];
+  const router = useRouter();
+  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [activeActionCardId, setActiveActionCardId] = useState<string | null>(null);
+  const [activeActionKey, setActiveActionKey] = useState<string | null>(null);
+
+  const renderDesignEngineeringCard = (project: DesignEngineeringProjectCard, mobile: boolean) => {
+    const hasExternalLink = Boolean(project.externalHref);
+    const hasGithubLink = Boolean(project.githubHref);
+    const hasAnyAction = hasExternalLink || hasGithubLink;
+    const isActionActive = activeActionCardId === project.id;
+    const externalActionKey = `${project.id}:external`;
+    const githubActionKey = `${project.id}:github`;
+    const isExternalActive = activeActionKey === externalActionKey;
+    const isGithubActive = activeActionKey === githubActionKey;
+
+    return (
+      <article
+        role="link"
+        tabIndex={0}
+        aria-label={`Open ${project.title} project`}
+        onClick={(event) => {
+          const target = event.target as HTMLElement | null;
+          if (target?.closest("[data-action-link='true']")) {
+            return;
+          }
+          setActiveCardId(project.id);
+          router.push(project.internalHref);
+        }}
+        onKeyDown={(event) => {
+          const target = event.target as HTMLElement | null;
+          if (target?.closest("[data-action-link='true']")) {
+            return;
+          }
+          if (event.key !== "Enter" && event.key !== " ") {
+            return;
+          }
+          event.preventDefault();
+          setActiveCardId(project.id);
+          router.push(project.internalHref);
+        }}
+        onFocus={(event) => {
+          if (event.target === event.currentTarget) {
+            setActiveCardId(project.id);
+          }
+        }}
+        className={cn(
+          "group relative h-[300px] w-full max-w-full cursor-pointer overflow-hidden rounded-none border border-stone-600/10 bg-white focus-visible:outline-none md:h-[344px] md:w-full",
+          activeCardId === project.id && "ring-2 ring-stone-600/30 ring-offset-2",
+          mobile ? "mx-0" : "",
+        )}
+      >
+        <div
+          className={cn(
+            "group/image relative h-[194px] w-full overflow-hidden bg-gradient-to-br md:h-[224px]",
+            project.image.tone,
+          )}
+        >
+          <Image
+            src={project.image.src}
+            alt={project.image.alt}
+            fill
+            sizes="(min-width: 768px) 48vw, 256px"
+            className={cn(
+              "object-contain p-6 md:transition-transform md:duration-700 md:ease-[cubic-bezier(0.16,1,0.3,1)] md:p-7",
+              !mobile && !isActionActive && "md:group-hover/image:scale-[1.06]",
+            )}
+          />
+          <div className="absolute inset-0 bg-stone-600/7" />
+        </div>
+
+        <div className="relative grid h-[106px] grid-cols-[60%_40%] items-start px-3 pt-4 pb-2 md:h-[120px] md:px-3.5 md:pt-4.5 md:pb-2.5">
+          <div className="min-w-0 self-start">
+            <p className="text-[14px] leading-[1.18] font-semibold tracking-[-0.008em] text-stone-600/88 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden md:text-[16px]">
+              {project.title}
+            </p>
+            <p className="mt-1.5 text-[12.5px] leading-[1.3] text-stone-600/70 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:4] overflow-hidden md:text-[13px]">
+              {project.description}
+            </p>
+          </div>
+
+          {hasAnyAction ? (
+            <div
+              className="relative z-20 flex h-full items-center justify-end gap-2.5 pr-1"
+              onPointerLeave={() => {
+                setActiveActionCardId((current) => (current === project.id ? null : current));
+                setActiveActionKey((current) => (current?.startsWith(`${project.id}:`) ? null : current));
+              }}
+              onFocusCapture={() => setActiveActionCardId(project.id)}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                  setActiveActionCardId((current) => (current === project.id ? null : current));
+                  setActiveActionKey((current) => (current?.startsWith(`${project.id}:`) ? null : current));
+                }
+              }}
+            >
+              {hasExternalLink ? (
+                <Link
+                  href={project.externalHref as string}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-action-link="true"
+                  className={cn(
+                    "relative inline-flex h-9 w-9 items-center justify-center p-1 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-1",
+                    isExternalActive
+                      ? "rounded-full bg-stone-500/20 text-stone-600/78"
+                      : "rounded-full bg-transparent text-stone-600/68",
+                    "active:rounded-full active:bg-stone-500/40 active:text-stone-600/85",
+                  )}
+                  aria-label={`Open external project link for ${project.title}`}
+                  onPointerEnter={() => {
+                    setActiveActionCardId(project.id);
+                    setActiveActionKey(externalActionKey);
+                  }}
+                  onPointerLeave={() =>
+                    setActiveActionKey((current) => (current === externalActionKey ? null : current))
+                  }
+                  onFocus={() => {
+                    setActiveCardId((current) => (current === project.id ? null : current));
+                    setActiveActionCardId(project.id);
+                    setActiveActionKey(externalActionKey);
+                  }}
+                  onClick={(event) => {
+                    setActiveCardId((current) => (current === project.id ? null : current));
+                    event.stopPropagation();
+                  }}
+                >
+                  <ArrowUpRight
+                    className="relative z-10 size-5"
+                    aria-hidden="true"
+                  />
+                </Link>
+              ) : null}
+              {hasGithubLink ? (
+                <Link
+                  href={project.githubHref as string}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-action-link="true"
+                  className={cn(
+                    "relative inline-flex h-9 w-9 items-center justify-center p-1 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-1",
+                    isGithubActive
+                      ? "rounded-full bg-stone-500/20 text-stone-600/78"
+                      : "rounded-full bg-transparent text-stone-600/68",
+                    "active:rounded-full active:bg-stone-500/40 active:text-stone-600/85",
+                  )}
+                  aria-label={`Open GitHub repository for ${project.title}`}
+                  onPointerEnter={() => {
+                    setActiveActionCardId(project.id);
+                    setActiveActionKey(githubActionKey);
+                  }}
+                  onPointerLeave={() =>
+                    setActiveActionKey((current) => (current === githubActionKey ? null : current))
+                  }
+                  onFocus={() => {
+                    setActiveCardId((current) => (current === project.id ? null : current));
+                    setActiveActionCardId(project.id);
+                    setActiveActionKey(githubActionKey);
+                  }}
+                  onClick={(event) => {
+                    setActiveCardId((current) => (current === project.id ? null : current));
+                    event.stopPropagation();
+                  }}
+                >
+                  <Github
+                    className="relative z-10 size-5"
+                    aria-hidden="true"
+                  />
+                </Link>
+              ) : null}
+            </div>
+          ) : (
+            <div className="h-full" aria-hidden="true" />
+          )}
+        </div>
+
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-0 z-0 hidden border border-transparent md:block",
+            !isActionActive && "md:group-hover:border-stone-600/10",
+          )}
+        />
+      </article>
+    );
+  };
 
   const introVariants = {
     hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
@@ -401,7 +616,7 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
   return (
     <motion.section
       id="design-engineering"
-      className="scroll-mt-24 pt-14 md:pt-20"
+      className="scroll-mt-20 pt-10 md:pt-14"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.24 }}
@@ -423,61 +638,16 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
         real-world problem solving.
       </motion.p>
 
-      <motion.div
-        ref={timelineRef}
-        className="relative mt-10 w-full max-w-[980px] py-4 md:mt-12 md:py-5"
-        variants={introVariants}
-      >
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-[58px] left-[17px] w-px bg-stone-600/14 md:inset-y-[72px] md:left-1/2 md:-translate-x-1/2"
-        />
-        <motion.span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-[58px] left-[17px] w-[2px] origin-top bg-[#f25c2a] md:inset-y-[72px] md:left-1/2 md:-translate-x-1/2"
-          style={{ scaleY: lineFillScale }}
-        />
-
-        <div className="space-y-[5.5rem] md:space-y-[7.5rem]">
-          {aiTimelineEntries.map((entry, index) => {
-            const isLeftCard = index % 2 === 0;
-            const nodeFill = nodeFillStates[index];
-
-            return (
-              <div
-                key={entry.title}
-                className="grid grid-cols-[34px_1fr] items-center gap-x-5 md:grid-cols-[1fr_auto_1fr] md:gap-x-10"
-              >
-                <div
-                  className={cn(
-                    "hidden rounded-none border border-stone-600/10 bg-stone-50/60 p-5 md:block md:max-w-[33ch] md:p-6",
-                    isLeftCard ? "md:col-start-1 md:justify-self-end md:text-right" : "md:col-start-3",
-                  )}
-                >
-                  <p className="text-[18px] leading-tight font-semibold text-stone-600/88">{entry.title}</p>
-                  <p className="mt-2 text-[14px] leading-[1.5] text-stone-600/66">{entry.detail}</p>
-                </div>
-
-                <div className="relative z-10 col-start-1 row-start-1 md:col-start-2 md:justify-self-center">
-                  <div className="relative flex h-9 w-9 items-center justify-center rounded-full border border-stone-600/22 bg-white shadow-[0_0_0_6px_rgba(250,250,249,0.95)] md:h-11 md:w-11">
-                    <motion.span className="absolute inset-0 rounded-full bg-[#f25c2a]" style={{ scale: nodeFill }} />
-                    <Sparkles className="relative z-10 size-[15px] text-stone-600/55 md:size-[17px]" />
-                    <motion.span
-                      className="absolute inset-0 z-20 flex items-center justify-center"
-                      style={{ opacity: nodeFill }}
-                    >
-                      <Sparkles className="size-[15px] text-white md:size-[17px]" />
-                    </motion.span>
-                  </div>
-                </div>
-
-                <div className="col-start-2 row-start-1 rounded-none border border-stone-600/10 bg-stone-50/60 p-4 md:hidden">
-                  <p className="text-[16px] leading-tight font-semibold text-stone-600/88">{entry.title}</p>
-                  <p className="mt-1.5 text-[13px] leading-[1.45] text-stone-600/66">{entry.detail}</p>
-                </div>
-              </div>
-            );
-          })}
+      <motion.div className="mt-10 w-full md:mt-12" variants={introVariants}>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+          {designEngineeringTimelineRows.flatMap((row) => [
+            <div key={`${row.id}-left`} className="md:justify-self-start">
+              {renderDesignEngineeringCard(row.leftCard, false)}
+            </div>,
+            <div key={`${row.id}-right`} className="md:justify-self-end">
+              {renderDesignEngineeringCard(row.rightCard, false)}
+            </div>,
+          ])}
         </div>
       </motion.div>
     </motion.section>
@@ -508,7 +678,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
   return (
     <motion.section
       id="contact"
-      className="scroll-mt-24 min-h-[52vh] pt-14 pb-4 md:pt-20"
+      className="scroll-mt-20 min-h-[52vh] pt-10 pb-4 md:pt-14"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -545,17 +715,11 @@ export function PortfolioPage() {
   const pendingSectionRef = useRef<PortfolioSection | null>(null);
   const programmaticScrollRef = useRef(false);
   const [handoffScrollY, setHandoffScrollY] = useState(1);
-  const [introFadeScrollSpan, setIntroFadeScrollSpan] = useState(120);
   const { scrollY } = useScroll();
   // Shared choreography timeline:
   // - flatten starts immediately at scrollY=0
-  // - flatten reaches 1 exactly when industrial intro fade starts
+  // - flatten reaches 1 near industrial section handoff
   const heroFlattenProgress = useTransform(scrollY, [0, handoffScrollY], [0, 1]);
-  const industrialIntroProgress = useTransform(
-    scrollY,
-    [handoffScrollY, handoffScrollY + introFadeScrollSpan],
-    [0, 1],
-  );
   const [activeSection, setActiveSection] = useState<PortfolioSection>(() =>
     sectionFromPath(pathname ?? "/"),
   );
@@ -570,9 +734,7 @@ export function PortfolioPage() {
       const industrialTop = industrialSection.getBoundingClientRect().top + window.scrollY;
       // Match the previous industrial reveal anchor: section top reaching ~52% viewport height.
       const nextHandoff = Math.max(1, industrialTop - window.innerHeight * 0.52);
-      const nextIntroSpan = Math.max(96, window.innerHeight * 0.13);
       setHandoffScrollY(nextHandoff);
-      setIntroFadeScrollSpan(nextIntroSpan);
     };
 
     measureHandoffTiming();
@@ -758,7 +920,6 @@ export function PortfolioPage() {
         />
         <IndustrialDesignSection
           prefersReducedMotion={prefersReducedMotion}
-          introProgress={industrialIntroProgress}
           sectionRef={industrialSectionRef}
         />
         <DesignEngineeringSection prefersReducedMotion={prefersReducedMotion} />
