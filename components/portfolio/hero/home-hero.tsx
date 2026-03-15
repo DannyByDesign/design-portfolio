@@ -21,6 +21,7 @@ const HERO_DEFINITION_PARAGRAPHS = [
 ];
 
 const HERO_SOCIAL_LABELS = ["LinkedIn", "Twitter/X", "Instagram"];
+const HERO_AXIS_LABEL_COLOR = "rgb(87 83 78 / 0.42)";
 
 export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProps) {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -57,6 +58,13 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
   const desktopPronunciationY = reducedMotion ? 0 : pronunciationY;
   const shouldAnimateFlatten = isDesktop && !reducedMotion;
   const shouldAnimateDescriptorCollapse = isDesktop && !reducedMotion;
+  const axisLabelStyle = shouldAnimateDescriptorCollapse
+    ? {
+        x: axisLabelX,
+        opacity: axisLabelOpacity,
+        color: HERO_AXIS_LABEL_COLOR,
+      }
+    : { color: HERO_AXIS_LABEL_COLOR };
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -107,14 +115,7 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
                   </span>
                   <motion.span
                     className="hero-axis-label"
-                    style={
-                      shouldAnimateDescriptorCollapse
-                        ? {
-                            x: axisLabelX,
-                            opacity: axisLabelOpacity,
-                          }
-                        : undefined
-                    }
+                    style={axisLabelStyle}
                   >
                     physical
                   </motion.span>
@@ -138,14 +139,7 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
                   </span>
                   <motion.span
                     className="hero-axis-label"
-                    style={
-                      shouldAnimateDescriptorCollapse
-                        ? {
-                            x: axisLabelX,
-                            opacity: axisLabelOpacity,
-                          }
-                        : undefined
-                    }
+                    style={axisLabelStyle}
                   >
                     digital
                   </motion.span>
@@ -169,14 +163,7 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
                   </span>
                   <motion.span
                     className="hero-axis-label"
-                    style={
-                      shouldAnimateDescriptorCollapse
-                        ? {
-                            x: axisLabelX,
-                            opacity: axisLabelOpacity,
-                          }
-                        : undefined
-                    }
+                    style={axisLabelStyle}
                   >
                     emotional
                   </motion.span>
@@ -238,7 +225,6 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
             <div className="hero-name-rail">
               <p className="hero-rail-name">Danny</p>
               <p className="hero-rail-name">Wang</p>
-              <span aria-hidden="true" className="hero-accent-bar" />
             </div>
 
             <div className="hero-social-stack mt-9 space-y-1.5">

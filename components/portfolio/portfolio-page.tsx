@@ -15,20 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HomeHero } from "@/components/portfolio/hero/home-hero";
+import { industrialProjects, type IndustrialProject } from "@/lib/portfolio-data";
 import { cn } from "@/lib/utils";
 
 type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "contact";
-
-type IndustrialProject = {
-  title: string;
-  subtitle: string;
-  href: string;
-  image: {
-    src: string;
-    alt: string;
-  };
-  tone: string;
-};
 
 type DesignEngineeringProjectCard = {
   id: string;
@@ -67,51 +57,6 @@ const sectionByPath: Record<string, PortfolioSection> = {
 };
 
 const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-const industrialProjects: IndustrialProject[] = [
-  {
-    title: "Concept Mobility System",
-    subtitle: "Bold interaction concept.",
-    href: "/industrial-design/concept-mobility-system",
-    image: { src: "/window.svg", alt: "Placeholder visual for concept mobility system" },
-    tone: "from-zinc-100 to-zinc-50",
-  },
-  {
-    title: "Adaptive Kitchen Tooling",
-    subtitle: "Ergonomic modular studies.",
-    href: "/industrial-design/adaptive-kitchen-tooling",
-    image: { src: "/globe.svg", alt: "Placeholder visual for adaptive kitchen tooling" },
-    tone: "from-stone-100 to-zinc-50",
-  },
-  {
-    title: "Wearable Utility Concept",
-    subtitle: "Comfort-first form studies.",
-    href: "/industrial-design/wearable-utility-concept",
-    image: { src: "/file.svg", alt: "Placeholder visual for wearable utility concept" },
-    tone: "from-zinc-100 to-neutral-50",
-  },
-  {
-    title: "Consumer Device Program",
-    subtitle: "Sketch-to-shelf execution.",
-    href: "/industrial-design/consumer-device-program",
-    image: { src: "/window.svg", alt: "Placeholder visual for consumer device program" },
-    tone: "from-zinc-100 to-zinc-50",
-  },
-  {
-    title: "Household Product Line",
-    subtitle: "Manufacturing-ready product line.",
-    href: "/industrial-design/household-product-line",
-    image: { src: "/globe.svg", alt: "Placeholder visual for household product line" },
-    tone: "from-stone-100 to-zinc-50",
-  },
-  {
-    title: "Accessory System Design",
-    subtitle: "Detail-led production handoff.",
-    href: "/industrial-design/accessory-system-design",
-    image: { src: "/file.svg", alt: "Placeholder visual for accessory system design" },
-    tone: "from-zinc-100 to-neutral-50",
-  },
-];
 
 const designEngineeringTimelineRows: DesignEngineeringTimelineRow[] = [
   {
