@@ -130,7 +130,6 @@
 }
 
 @utility hero-tilt-stage {
-  perspective: var(--hero-tilt-perspective);
   perspective-origin: var(--hero-tilt-origin-x) var(--hero-tilt-origin-y);
 }
 
@@ -143,7 +142,6 @@
 @utility hero-tilt-static {
   transform-style: preserve-3d;
   transform-origin: left 44%;
-  transform: rotateY(17deg);
   width: fit-content;
 }
 

@@ -22,6 +22,8 @@ const HERO_DEFINITION_PARAGRAPHS = [
 
 const HERO_SOCIAL_LABELS = ["LinkedIn", "Twitter/X", "Instagram"];
 const HERO_AXIS_LABEL_COLOR = "rgb(87 83 78 / 0.42)";
+const HERO_INITIAL_ROTATE_Y = 21;
+const HERO_INITIAL_PERSPECTIVE = 1050;
 
 export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProps) {
   const heroRef = useRef<HTMLElement | null>(null);
@@ -33,8 +35,8 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const flattenRotateY = useTransform(flattenSource, [0, 0.86], [17, 0]);
-  const flattenPerspective = useTransform(flattenSource, [0, 1], [1050, 22000]);
+  const flattenRotateY = useTransform(flattenSource, [0, 0.86], [HERO_INITIAL_ROTATE_Y, 0]);
+  const flattenPerspective = useTransform(flattenSource, [0, 1], [HERO_INITIAL_PERSPECTIVE, 22000]);
 
   const lineProgress = useTransform(heroScrollProgress, [0.05, 0.14], [0, 1]);
   const lineOpacity = useTransform(heroScrollProgress, [0.05, 0.07, 0.14], [0, 0, 1]);
@@ -58,6 +60,12 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
   const desktopPronunciationY = reducedMotion ? 0 : pronunciationY;
   const shouldAnimateFlatten = isDesktop && !reducedMotion;
   const shouldAnimateDescriptorCollapse = isDesktop && !reducedMotion;
+  const tiltStageStyle = shouldAnimateFlatten
+    ? { perspective: flattenPerspective }
+    : { perspective: HERO_INITIAL_PERSPECTIVE };
+  const tiltStaticStyle = shouldAnimateFlatten
+    ? { rotateY: flattenRotateY }
+    : { rotateY: HERO_INITIAL_ROTATE_Y };
   const axisLabelStyle = shouldAnimateDescriptorCollapse
     ? {
         x: axisLabelX,
@@ -90,11 +98,11 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
         <div className="hero-main-column">
           <motion.div
             className="hero-tilt-stage"
-            style={shouldAnimateFlatten ? { perspective: flattenPerspective } : undefined}
+            style={tiltStageStyle}
           >
             <motion.div
               className="hero-tilt-static"
-              style={shouldAnimateFlatten ? { rotateY: flattenRotateY } : undefined}
+              style={tiltStaticStyle}
             >
               <div className="hero-descriptor-stack hero-descriptor-stack-layer">
                 <motion.div
