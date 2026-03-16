@@ -562,6 +562,24 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
     },
   };
 
+  const cardGridVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: reducedMotion ? 0 : 0.08,
+      },
+    },
+  };
+
+  const cardItemVariants = {
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, ease: easeOut },
+    },
+  };
+
   return (
     <motion.section
       id="design-engineering"
@@ -587,15 +605,23 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
         real-world problem solving.
       </motion.p>
 
-      <motion.div className="mt-10 w-full md:mt-12" variants={introVariants}>
+      <motion.div className="mt-10 w-full md:mt-12" variants={cardGridVariants}>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
           {designEngineeringTimelineRows.flatMap((row) => [
-            <div key={`${row.id}-left`} className="md:justify-self-start">
+            <motion.div
+              key={`${row.id}-left`}
+              className="md:justify-self-start"
+              variants={cardItemVariants}
+            >
               {renderDesignEngineeringCard(row.leftCard, false)}
-            </div>,
-            <div key={`${row.id}-right`} className="md:justify-self-end">
+            </motion.div>,
+            <motion.div
+              key={`${row.id}-right`}
+              className="md:justify-self-end"
+              variants={cardItemVariants}
+            >
               {renderDesignEngineeringCard(row.rightCard, false)}
-            </div>,
+            </motion.div>,
           ])}
         </div>
       </motion.div>
