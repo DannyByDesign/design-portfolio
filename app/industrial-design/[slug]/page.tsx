@@ -51,6 +51,9 @@ export default async function IndustrialProjectPage({
   }
 
   const siblings = getIndustrialProjectSiblings(project.slug);
+  const projectIndex = industrialProjects.findIndex((entry) => entry.slug === project.slug);
+  const isFirstProject = projectIndex === 0;
+  const isLastProject = projectIndex === industrialProjects.length - 1;
 
   if (!siblings) {
     notFound();
@@ -93,7 +96,7 @@ export default async function IndustrialProjectPage({
           <div className="border-t border-stone-600/10">
             <div className="grid grid-cols-1 md:grid-cols-2">
               <Link
-                href={siblings.previous.href}
+                href={isFirstProject ? "/" : siblings.previous.href}
                 className="group flex min-h-24 items-center border-b border-stone-600/10 py-5 transition-colors duration-200 hover:text-stone-700 md:min-h-28 md:border-r md:border-b-0 md:pr-6"
               >
                 <div className="flex max-w-full items-center gap-2.5">
@@ -103,27 +106,31 @@ export default async function IndustrialProjectPage({
                   />
                   <div className="min-w-0">
                     <p className="text-[10px] uppercase tracking-[0.24em] text-stone-600/42">
-                      Previous Project
+                      {isFirstProject ? "Back to Home" : "Previous Project"}
                     </p>
-                    <p className="mt-1.5 truncate text-[0.98rem] tracking-[-0.02em] text-stone-600/88 transition-colors duration-200 group-hover:text-stone-700">
-                      {siblings.previous.title}
-                    </p>
+                    {!isFirstProject ? (
+                      <p className="mt-1.5 truncate text-[0.98rem] tracking-[-0.02em] text-stone-600/88 transition-colors duration-200 group-hover:text-stone-700">
+                        {siblings.previous.title}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               </Link>
 
               <Link
-                href={siblings.next.href}
+                href={isLastProject ? "/" : siblings.next.href}
                 className="group flex min-h-24 items-center justify-end py-5 transition-colors duration-200 hover:text-stone-700 md:min-h-28 md:pl-6"
               >
                 <div className="flex max-w-full items-center gap-2.5">
                   <div className="min-w-0 text-right">
                     <p className="text-[10px] uppercase tracking-[0.24em] text-stone-600/42">
-                      Next Project
+                      {isLastProject ? "Back to Home" : "Next Project"}
                     </p>
-                    <p className="mt-1.5 truncate text-[0.98rem] tracking-[-0.02em] text-stone-600/88 transition-colors duration-200 group-hover:text-stone-700">
-                      {siblings.next.title}
-                    </p>
+                    {!isLastProject ? (
+                      <p className="mt-1.5 truncate text-[0.98rem] tracking-[-0.02em] text-stone-600/88 transition-colors duration-200 group-hover:text-stone-700">
+                        {siblings.next.title}
+                      </p>
+                    ) : null}
                   </div>
                   <ChevronRight
                     className="size-3.5 shrink-0 text-stone-600/58 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-stone-700"

@@ -310,8 +310,10 @@ function IndustrialDesignSection({
             <>
               <div className="absolute inset-0 bg-stone-600/5 md:transition-colors md:duration-500 md:group-hover:bg-stone-600/58" />
               <div className="absolute inset-0 hidden flex-col items-center justify-center px-6 text-center text-white md:flex md:opacity-0 md:transition-opacity md:duration-700 md:group-hover:opacity-100">
-                <p className="text-[17px] leading-tight font-bold tracking-[-0.01em]">{project.title}</p>
-                <p className="mt-2 max-w-[18ch] text-[14px] leading-[1.3] text-white/88">
+                <p className="text-[20px] leading-tight font-bold tracking-[-0.015em] md:text-[22px]">
+                  {project.title}
+                </p>
+                <p className="mt-2 max-w-[20ch] text-[15px] leading-[1.35] text-white/88 md:text-[16px]">
                   {project.subtitle}
                 </p>
               </div>
