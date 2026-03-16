@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
+import { ProjectRouteLink } from "@/components/portfolio/project-route-link";
 import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -288,7 +289,7 @@ function IndustrialDesignSection({
     : { once: true, amount: 0.24 as const };
 
   const renderProjectCard = (project: IndustrialProject, mobile: boolean) => (
-    <Link
+    <ProjectRouteLink
       href={project.href}
       aria-label={`Open ${project.title} project`}
       className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-2"
@@ -323,7 +324,7 @@ function IndustrialDesignSection({
           ) : null}
         </div>
       </Card>
-    </Link>
+    </ProjectRouteLink>
   );
 
   return (
