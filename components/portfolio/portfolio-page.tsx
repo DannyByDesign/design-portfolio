@@ -294,14 +294,14 @@ function IndustrialDesignSection({
       className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-2"
     >
       <Card className="group relative h-[300px] w-full max-w-full overflow-hidden rounded-none border-stone-600/10 bg-white p-0 md:h-[344px]">
-        <div className={cn("relative h-full w-full overflow-hidden bg-gradient-to-b", project.tone)}>
+        <div className="relative h-full w-full overflow-hidden bg-stone-100">
           <Image
             src={project.image.src}
             alt={project.image.alt}
             fill
             sizes="(min-width: 768px) 48vw, 100vw"
             className={cn(
-              "object-contain p-10 md:p-11",
+              "object-cover",
               !mobile &&
                 "md:transition-transform md:duration-900 md:ease-[cubic-bezier(0.16,1,0.3,1)] md:group-hover:scale-[1.14]",
             )}

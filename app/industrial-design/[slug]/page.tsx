@@ -10,8 +10,6 @@ import {
   getIndustrialProjectSiblings,
   industrialProjects,
 } from "@/lib/portfolio-data";
-import { cn } from "@/lib/utils";
-
 type IndustrialProjectPageProps = {
   params: Promise<{
     slug: string;
@@ -69,22 +67,29 @@ export default async function IndustrialProjectPage({
           className="mx-auto w-full max-w-[1040px] px-6 pt-20 pb-20 md:px-8 md:pt-28 md:pb-24"
         >
           {project.frames.map((frame, index) => (
-            <figure
-              key={frame.id}
-              className={cn(
-                "relative aspect-[16/9] w-full overflow-hidden",
-                index % 2 === 0 ? "bg-stone-100" : "bg-stone-50",
+            <figure key={frame.id} className="w-full overflow-hidden bg-stone-50">
+              {frame.mediaType === "video" ? (
+                <video
+                  className="block h-auto w-full"
+                  src={frame.src}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload={index === 0 ? "auto" : "metadata"}
+                />
+              ) : (
+                <Image
+                  src={frame.src}
+                  alt={frame.alt}
+                  width={1920}
+                  height={1080}
+                  priority={index === 0}
+                  sizes="(min-width: 1040px) 1040px, calc(100vw - 3rem)"
+                  className="block h-auto w-full"
+                  unoptimized={frame.src.endsWith(".gif")}
+                />
               )}
-            >
-              <div className={cn("absolute inset-0 bg-gradient-to-br", frame.tone)} />
-              <Image
-                src={frame.src}
-                alt={frame.alt}
-                fill
-                priority={index === 0}
-                sizes="100vw"
-                className="object-contain p-12 md:p-16"
-              />
             </figure>
           ))}
         </section>
