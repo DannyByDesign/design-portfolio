@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { ProjectPageHeader } from "@/components/portfolio/project-page-header";
+import { ProjectPageScrollReset } from "@/components/portfolio/project-page-scroll-reset";
 import { ProjectRouteLink } from "@/components/portfolio/project-route-link";
 import { ViewportVideo } from "@/components/portfolio/viewport-video";
 import {
@@ -62,6 +63,7 @@ export default async function IndustrialProjectPage({
 
   return (
     <div className="min-h-screen bg-white text-stone-600">
+      <ProjectPageScrollReset />
       <ProjectPageHeader />
 
       <main className="pb-28 md:pb-32">
