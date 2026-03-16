@@ -2,6 +2,32 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  images: {
+    localPatterns: [
+      { pathname: "/portfolio/**" },
+      { pathname: "/window.svg" },
+      { pathname: "/globe.svg" },
+      { pathname: "/file.svg" },
+    ],
+    deviceSizes: [384, 512, 640, 768, 1024, 1280],
+    imageSizes: [96, 128, 192, 256, 384, 512],
+    qualities: [60, 75],
+    formats: ["image/webp"],
+    minimumCacheTTL: 2678400,
+  },
+  async headers() {
+    return [
+      {
+        source: "/portfolio/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=604800",
+          },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {

@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { ProjectPageHeader } from "@/components/portfolio/project-page-header";
+import { ViewportVideo } from "@/components/portfolio/viewport-video";
 import {
   getIndustrialProject,
   getIndustrialProjectSiblings,
   industrialProjects,
 } from "@/lib/portfolio-data";
+
+/* eslint-disable @next/next/no-img-element */
 type IndustrialProjectPageProps = {
   params: Promise<{
     slug: string;
@@ -66,28 +68,27 @@ export default async function IndustrialProjectPage({
           aria-label={`${project.title} gallery`}
           className="mx-auto w-full max-w-[1040px] px-6 pt-20 pb-20 md:px-8 md:pt-28 md:pb-24"
         >
-          {project.frames.map((frame, index) => (
+          {project.frames.map((frame) => (
             <figure key={frame.id} className="w-full overflow-hidden bg-stone-50">
               {frame.mediaType === "video" ? (
-                <video
+                <ViewportVideo
                   className="block h-auto w-full"
                   src={frame.src}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload={index === 0 ? "auto" : "metadata"}
+                  poster={frame.poster}
+                  width={frame.width}
+                  height={frame.height}
+                  preload={frame.preload}
                 />
               ) : (
-                <Image
+                <img
                   src={frame.src}
                   alt={frame.alt}
-                  width={1920}
-                  height={1080}
-                  priority={index === 0}
-                  sizes="(min-width: 1040px) 1040px, calc(100vw - 3rem)"
+                  width={frame.width}
+                  height={frame.height}
+                  loading={frame.loading}
+                  decoding="async"
+                  fetchPriority={frame.loading === "eager" ? "high" : "auto"}
                   className="block h-auto w-full"
-                  unoptimized={frame.src.endsWith(".gif")}
                 />
               )}
             </figure>

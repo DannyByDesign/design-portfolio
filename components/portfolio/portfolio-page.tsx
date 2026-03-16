@@ -299,7 +299,9 @@ function IndustrialDesignSection({
             src={project.image.src}
             alt={project.image.alt}
             fill
-            sizes="(min-width: 768px) 48vw, 100vw"
+            quality={project.image.quality}
+            loading="lazy"
+            sizes="(min-width: 1040px) 488px, (min-width: 640px) calc((100vw - 4.5rem) / 2), calc(100vw - 3rem)"
             className={cn(
               "object-cover",
               !mobile &&
@@ -308,7 +310,7 @@ function IndustrialDesignSection({
           />
           {!mobile ? (
             <>
-              <div className="absolute inset-0 bg-stone-600/5 md:transition-colors md:duration-500 md:group-hover:bg-stone-600/58" />
+              <div className="absolute inset-0 bg-neutral-900/0 md:transition-colors md:duration-500 md:group-hover:bg-neutral-900/68" />
               <div className="absolute inset-0 hidden flex-col items-center justify-center px-6 text-center text-white md:flex md:opacity-0 md:transition-opacity md:duration-700 md:group-hover:opacity-100">
                 <p className="text-[20px] leading-tight font-bold tracking-[-0.015em] md:text-[22px]">
                   {project.title}
@@ -340,7 +342,7 @@ function IndustrialDesignSection({
         className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={introVariants}
       >
-        industrial design
+        Industrial Design
       </motion.h2>
       <motion.p
         className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
@@ -575,7 +577,7 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
         className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={introVariants}
       >
-        design engineering
+        Design Engineering
       </motion.h2>
       <motion.p
         className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
@@ -638,7 +640,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
         className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={itemVariants}
       >
-        Let&apos;s build something meaningful.
+        Let&apos;s Build Something Meaningful.
       </motion.h2>
       <motion.p className="mt-4 max-w-[64ch] text-[1.05rem] leading-[1.62] text-stone-600/65" variants={itemVariants}>
         I&apos;m open to internships, full-time roles, and collaborative projects across industrial
