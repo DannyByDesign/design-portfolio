@@ -7,7 +7,7 @@ export type PortfolioImageAsset = {
   delivery: "next";
 };
 
-export type IndustrialProjectFrame = {
+export type PortfolioProjectFrame = {
   id: string;
   src: string;
   alt: string;
@@ -20,6 +20,8 @@ export type IndustrialProjectFrame = {
   poster?: string;
 };
 
+export type IndustrialProjectFrame = PortfolioProjectFrame;
+
 export type IndustrialProject = {
   slug: string;
   title: string;
@@ -28,6 +30,23 @@ export type IndustrialProject = {
   image: PortfolioImageAsset;
   tone: string;
   frames: IndustrialProjectFrame[];
+};
+
+export type DesignEngineeringProjectImage = {
+  src: string;
+  alt: string;
+  tone: string;
+};
+
+export type DesignEngineeringProject = {
+  slug: string;
+  title: string;
+  description: string;
+  href: string;
+  image: DesignEngineeringProjectImage;
+  frames: PortfolioProjectFrame[];
+  externalHref?: string;
+  githubHref?: string;
 };
 
 type FrameDescriptor = {
@@ -39,7 +58,7 @@ type FrameDescriptor = {
   preload?: "none" | "metadata" | "auto";
 };
 
-function getMediaType(src: string): IndustrialProjectFrame["mediaType"] {
+function getMediaType(src: string): PortfolioProjectFrame["mediaType"] {
   if (/\.(mp4|webm|mov)$/i.test(src)) {
     return "video";
   }
@@ -63,7 +82,7 @@ function createThumbnail(
   };
 }
 
-function createFrames(projectTitle: string, frames: FrameDescriptor[]): IndustrialProjectFrame[] {
+function createFrames(projectTitle: string, frames: FrameDescriptor[]): PortfolioProjectFrame[] {
   return frames.map((frame, index) => ({
     id: `frame-${String(index + 1).padStart(2, "0")}`,
     src: frame.src,
@@ -76,6 +95,14 @@ function createFrames(projectTitle: string, frames: FrameDescriptor[]): Industri
     preload: frame.preload,
     poster: frame.poster,
   }));
+}
+
+function createDesignEngineeringFrames(projectTitle: string, slug: string): PortfolioProjectFrame[] {
+  return createFrames(projectTitle, [
+    { src: `/portfolio/design-engineering/${slug}/1.jpg`, width: 1600, height: 1200 },
+    { src: `/portfolio/design-engineering/${slug}/2.jpg`, width: 1600, height: 1200 },
+    { src: `/portfolio/design-engineering/${slug}/3.jpg`, width: 1600, height: 1200 },
+  ]);
 }
 
 export const industrialProjects: IndustrialProject[] = [
@@ -284,6 +311,87 @@ export const industrialProjects: IndustrialProject[] = [
   },
 ];
 
+export const designEngineeringProjects: DesignEngineeringProject[] = [
+  {
+    slug: "workflow-automation-suite",
+    title: "Workflow Automation Suite",
+    description: "A collection of AI helpers that remove repetitive production and handoff tasks.",
+    href: "/design-engineering/workflow-automation-suite",
+    externalHref: "https://example.com/workflow-automation-suite",
+    githubHref: "https://github.com/example/workflow-automation-suite",
+    image: {
+      src: "/window.svg",
+      alt: "Visualization for workflow automation suite project",
+      tone: "from-zinc-100 via-stone-100 to-zinc-50",
+    },
+    frames: createDesignEngineeringFrames("Workflow Automation Suite", "workflow-automation-suite"),
+  },
+  {
+    slug: "ux-research-copilot",
+    title: "UX Research Copilot",
+    description: "A prompt-driven workspace for synthesis, tagging, and insight extraction from interviews.",
+    href: "/design-engineering/ux-research-copilot",
+    externalHref: "https://example.com/ux-research-copilot",
+    image: {
+      src: "/globe.svg",
+      alt: "Visualization for UX research copilot project",
+      tone: "from-stone-100 via-zinc-100 to-neutral-50",
+    },
+    frames: createDesignEngineeringFrames("UX Research Copilot", "ux-research-copilot"),
+  },
+  {
+    slug: "rapid-prototype-lab",
+    title: "Rapid Prototype Lab",
+    description: "An AI-assisted prototyping flow used to validate interaction directions in hours.",
+    href: "/design-engineering/rapid-prototype-lab",
+    image: {
+      src: "/file.svg",
+      alt: "Visualization for rapid prototype lab project",
+      tone: "from-zinc-100 via-stone-100 to-zinc-50",
+    },
+    frames: createDesignEngineeringFrames("Rapid Prototype Lab", "rapid-prototype-lab"),
+  },
+  {
+    slug: "content-system-generator",
+    title: "Content System Generator",
+    description: "A pipeline that drafts and normalizes product content across feature surfaces.",
+    href: "/design-engineering/content-system-generator",
+    externalHref: "https://example.com/content-system-generator",
+    githubHref: "https://github.com/example/content-system-generator",
+    image: {
+      src: "/window.svg",
+      alt: "Visualization for content system generator project",
+      tone: "from-stone-100 via-zinc-100 to-neutral-50",
+    },
+    frames: createDesignEngineeringFrames("Content System Generator", "content-system-generator"),
+  },
+  {
+    slug: "delivery-readiness-tooling",
+    title: "Delivery Readiness Tooling",
+    description: "A quality gate utility that flags implementation risks before engineering handoff.",
+    href: "/design-engineering/delivery-readiness-tooling",
+    externalHref: "https://example.com/delivery-readiness-tooling",
+    image: {
+      src: "/globe.svg",
+      alt: "Visualization for delivery readiness tooling project",
+      tone: "from-zinc-100 via-stone-100 to-neutral-50",
+    },
+    frames: createDesignEngineeringFrames("Delivery Readiness Tooling", "delivery-readiness-tooling"),
+  },
+  {
+    slug: "ai-support-console",
+    title: "AI Support Console",
+    description: "An internal operations interface that accelerates diagnosis and support workflows.",
+    href: "/design-engineering/ai-support-console",
+    image: {
+      src: "/file.svg",
+      alt: "Visualization for AI support console project",
+      tone: "from-stone-100 via-zinc-100 to-neutral-50",
+    },
+    frames: createDesignEngineeringFrames("AI Support Console", "ai-support-console"),
+  },
+];
+
 export function getIndustrialProject(slug: string) {
   return industrialProjects.find((project) => project.slug === slug);
 }
@@ -302,5 +410,26 @@ export function getIndustrialProjectSiblings(slug: string) {
   return {
     previous: industrialProjects[previousIndex],
     next: industrialProjects[nextIndex],
+  };
+}
+
+export function getDesignEngineeringProject(slug: string) {
+  return designEngineeringProjects.find((project) => project.slug === slug);
+}
+
+export function getDesignEngineeringProjectSiblings(slug: string) {
+  const projectIndex = designEngineeringProjects.findIndex((project) => project.slug === slug);
+
+  if (projectIndex === -1) {
+    return null;
+  }
+
+  const previousIndex =
+    (projectIndex - 1 + designEngineeringProjects.length) % designEngineeringProjects.length;
+  const nextIndex = (projectIndex + 1) % designEngineeringProjects.length;
+
+  return {
+    previous: designEngineeringProjects[previousIndex],
+    next: designEngineeringProjects[nextIndex],
   };
 }

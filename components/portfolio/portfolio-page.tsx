@@ -4,7 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { ArrowUpRight, Github, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
 import { ProjectRouteLink } from "@/components/portfolio/project-route-link";
@@ -16,30 +16,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HomeHero } from "@/components/portfolio/hero/home-hero";
-import { industrialProjects, type IndustrialProject } from "@/lib/portfolio-data";
+import {
+  designEngineeringProjects,
+  industrialProjects,
+  type DesignEngineeringProject,
+  type IndustrialProject,
+} from "@/lib/portfolio-data";
 import { cn } from "@/lib/utils";
 
 type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "contact";
-
-type DesignEngineeringProjectCard = {
-  id: string;
-  title: string;
-  description: string;
-  internalHref: string;
-  image: {
-    src: string;
-    alt: string;
-    tone: string;
-  };
-  externalHref?: string;
-  githubHref?: string;
-};
-
-type DesignEngineeringTimelineRow = {
-  id: string;
-  leftCard: DesignEngineeringProjectCard;
-  rightCard: DesignEngineeringProjectCard;
-};
 
 const sectionIds: PortfolioSection[] = ["home", "industrial-design", "design-engineering", "contact"];
 
@@ -58,90 +43,6 @@ const sectionByPath: Record<string, PortfolioSection> = {
 };
 
 const easeOut: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-const designEngineeringTimelineRows: DesignEngineeringTimelineRow[] = [
-  {
-    id: "row-1",
-    leftCard: {
-      id: "workflow-automation-suite",
-      title: "Workflow Automation Suite",
-      description: "A collection of AI helpers that remove repetitive production and handoff tasks.",
-      internalHref: "/design-engineering#workflow-automation-suite",
-      externalHref: "https://example.com/workflow-automation-suite",
-      githubHref: "https://github.com/example/workflow-automation-suite",
-      image: {
-        src: "/window.svg",
-        alt: "Visualization for workflow automation suite project",
-        tone: "from-zinc-100 via-stone-100 to-zinc-50",
-      },
-    },
-    rightCard: {
-      id: "ux-research-copilot",
-      title: "UX Research Copilot",
-      description: "A prompt-driven workspace for synthesis, tagging, and insight extraction from interviews.",
-      internalHref: "/design-engineering#ux-research-copilot",
-      externalHref: "https://example.com/ux-research-copilot",
-      image: {
-        src: "/globe.svg",
-        alt: "Visualization for UX research copilot project",
-        tone: "from-stone-100 via-zinc-100 to-neutral-50",
-      },
-    },
-  },
-  {
-    id: "row-2",
-    leftCard: {
-      id: "rapid-prototype-lab",
-      title: "Rapid Prototype Lab",
-      description: "An AI-assisted prototyping flow used to validate interaction directions in hours.",
-      internalHref: "/design-engineering#rapid-prototype-lab",
-      image: {
-        src: "/file.svg",
-        alt: "Visualization for rapid prototype lab project",
-        tone: "from-zinc-100 via-stone-100 to-zinc-50",
-      },
-    },
-    rightCard: {
-      id: "content-system-generator",
-      title: "Content System Generator",
-      description: "A pipeline that drafts and normalizes product content across feature surfaces.",
-      internalHref: "/design-engineering#content-system-generator",
-      externalHref: "https://example.com/content-system-generator",
-      githubHref: "https://github.com/example/content-system-generator",
-      image: {
-        src: "/window.svg",
-        alt: "Visualization for content system generator project",
-        tone: "from-stone-100 via-zinc-100 to-zinc-50",
-      },
-    },
-  },
-  {
-    id: "row-3",
-    leftCard: {
-      id: "delivery-readiness-tooling",
-      title: "Delivery Readiness Tooling",
-      description: "A quality gate utility that flags implementation risks before engineering handoff.",
-      internalHref: "/design-engineering#delivery-readiness-tooling",
-      externalHref: "https://example.com/delivery-readiness-tooling",
-      image: {
-        src: "/globe.svg",
-        alt: "Visualization for delivery readiness tooling project",
-        tone: "from-zinc-100 via-stone-100 to-neutral-50",
-      },
-    },
-    rightCard: {
-      id: "ai-support-console",
-      title: "AI Support Console",
-      description: "An internal operations interface that accelerates diagnosis and support workflows.",
-      internalHref: "/design-engineering#ai-support-console",
-      image: {
-        src: "/file.svg",
-        alt: "Visualization for AI support console project",
-        tone: "from-stone-100 via-zinc-100 to-neutral-50",
-      },
-    },
-  },
-];
 
 function sectionFromPath(pathname: string): PortfolioSection {
   return sectionByPath[pathname] ?? "home";
@@ -369,57 +270,31 @@ function IndustrialDesignSection({
 
 function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
   const reducedMotion = prefersReducedMotion ?? false;
-  const router = useRouter();
-  const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const [activeActionCardId, setActiveActionCardId] = useState<string | null>(null);
   const [activeActionKey, setActiveActionKey] = useState<string | null>(null);
 
-  const renderDesignEngineeringCard = (project: DesignEngineeringProjectCard, mobile: boolean) => {
+  const renderDesignEngineeringCard = (project: DesignEngineeringProject, mobile: boolean) => {
     const hasExternalLink = Boolean(project.externalHref);
     const hasGithubLink = Boolean(project.githubHref);
     const hasAnyAction = hasExternalLink || hasGithubLink;
-    const isActionActive = activeActionCardId === project.id;
-    const externalActionKey = `${project.id}:external`;
-    const githubActionKey = `${project.id}:github`;
+    const isActionActive = activeActionCardId === project.slug;
+    const externalActionKey = `${project.slug}:external`;
+    const githubActionKey = `${project.slug}:github`;
     const isExternalActive = activeActionKey === externalActionKey;
     const isGithubActive = activeActionKey === githubActionKey;
 
     return (
       <article
-        role="link"
-        tabIndex={0}
-        aria-label={`Open ${project.title} project`}
-        onClick={(event) => {
-          const target = event.target as HTMLElement | null;
-          if (target?.closest("[data-action-link='true']")) {
-            return;
-          }
-          setActiveCardId(project.id);
-          router.push(project.internalHref);
-        }}
-        onKeyDown={(event) => {
-          const target = event.target as HTMLElement | null;
-          if (target?.closest("[data-action-link='true']")) {
-            return;
-          }
-          if (event.key !== "Enter" && event.key !== " ") {
-            return;
-          }
-          event.preventDefault();
-          setActiveCardId(project.id);
-          router.push(project.internalHref);
-        }}
-        onFocus={(event) => {
-          if (event.target === event.currentTarget) {
-            setActiveCardId(project.id);
-          }
-        }}
         className={cn(
-          "group relative h-[300px] w-full max-w-full cursor-pointer overflow-hidden rounded-none border border-stone-600/10 bg-white focus-visible:outline-none md:h-[344px] md:w-full",
-          activeCardId === project.id && "ring-2 ring-stone-600/30 ring-offset-2",
+          "group relative h-[300px] w-full max-w-full overflow-hidden rounded-none border border-stone-600/10 bg-white md:h-[344px] md:w-full",
           mobile ? "mx-0" : "",
         )}
       >
+        <ProjectRouteLink
+          href={project.href}
+          aria-label={`Open ${project.title} project`}
+          className="absolute inset-0 z-10 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-2"
+        />
         <div
           className={cn(
             "group/image relative h-[194px] w-full overflow-hidden bg-gradient-to-br md:h-[224px]",
@@ -433,7 +308,7 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
             sizes="(min-width: 768px) 48vw, 256px"
             className={cn(
               "object-contain p-6 md:transition-transform md:duration-700 md:ease-[cubic-bezier(0.16,1,0.3,1)] md:p-7",
-              !mobile && !isActionActive && "md:group-hover/image:scale-[1.06]",
+              !mobile && !isActionActive && "md:group-hover:scale-[1.06]",
             )}
           />
           <div className="absolute inset-0 bg-stone-600/7" />
@@ -453,14 +328,18 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
             <div
               className="relative z-20 flex h-full items-center justify-end gap-2.5 pr-1"
               onPointerLeave={() => {
-                setActiveActionCardId((current) => (current === project.id ? null : current));
-                setActiveActionKey((current) => (current?.startsWith(`${project.id}:`) ? null : current));
+                setActiveActionCardId((current) => (current === project.slug ? null : current));
+                setActiveActionKey((current) =>
+                  current?.startsWith(`${project.slug}:`) ? null : current,
+                );
               }}
-              onFocusCapture={() => setActiveActionCardId(project.id)}
+              onFocusCapture={() => setActiveActionCardId(project.slug)}
               onBlur={(event) => {
                 if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-                  setActiveActionCardId((current) => (current === project.id ? null : current));
-                  setActiveActionKey((current) => (current?.startsWith(`${project.id}:`) ? null : current));
+                  setActiveActionCardId((current) => (current === project.slug ? null : current));
+                  setActiveActionKey((current) =>
+                    current?.startsWith(`${project.slug}:`) ? null : current,
+                  );
                 }
               }}
             >
@@ -479,21 +358,17 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
                   )}
                   aria-label={`Open external project link for ${project.title}`}
                   onPointerEnter={() => {
-                    setActiveActionCardId(project.id);
+                    setActiveActionCardId(project.slug);
                     setActiveActionKey(externalActionKey);
                   }}
                   onPointerLeave={() =>
                     setActiveActionKey((current) => (current === externalActionKey ? null : current))
                   }
                   onFocus={() => {
-                    setActiveCardId((current) => (current === project.id ? null : current));
-                    setActiveActionCardId(project.id);
+                    setActiveActionCardId(project.slug);
                     setActiveActionKey(externalActionKey);
                   }}
-                  onClick={(event) => {
-                    setActiveCardId((current) => (current === project.id ? null : current));
-                    event.stopPropagation();
-                  }}
+                  onClick={(event) => event.stopPropagation()}
                 >
                   <ArrowUpRight
                     className="relative z-10 size-5"
@@ -516,21 +391,17 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
                   )}
                   aria-label={`Open GitHub repository for ${project.title}`}
                   onPointerEnter={() => {
-                    setActiveActionCardId(project.id);
+                    setActiveActionCardId(project.slug);
                     setActiveActionKey(githubActionKey);
                   }}
                   onPointerLeave={() =>
                     setActiveActionKey((current) => (current === githubActionKey ? null : current))
                   }
                   onFocus={() => {
-                    setActiveCardId((current) => (current === project.id ? null : current));
-                    setActiveActionCardId(project.id);
+                    setActiveActionCardId(project.slug);
                     setActiveActionKey(githubActionKey);
                   }}
-                  onClick={(event) => {
-                    setActiveCardId((current) => (current === project.id ? null : current));
-                    event.stopPropagation();
-                  }}
+                  onClick={(event) => event.stopPropagation()}
                 >
                   <Github
                     className="relative z-10 size-5"
@@ -608,22 +479,11 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
 
       <motion.div className="mt-10 w-full md:mt-12" variants={cardGridVariants}>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-          {designEngineeringTimelineRows.flatMap((row) => [
-            <motion.div
-              key={`${row.id}-left`}
-              className="md:justify-self-start"
-              variants={cardItemVariants}
-            >
-              {renderDesignEngineeringCard(row.leftCard, false)}
-            </motion.div>,
-            <motion.div
-              key={`${row.id}-right`}
-              className="md:justify-self-end"
-              variants={cardItemVariants}
-            >
-              {renderDesignEngineeringCard(row.rightCard, false)}
-            </motion.div>,
-          ])}
+          {designEngineeringProjects.map((project) => (
+            <motion.div key={project.slug} className="md:justify-self-stretch" variants={cardItemVariants}>
+              {renderDesignEngineeringCard(project, false)}
+            </motion.div>
+          ))}
         </div>
       </motion.div>
     </motion.section>
