@@ -770,7 +770,7 @@ export function PortfolioPage() {
         }, 900);
 
         target.scrollIntoView({
-          behavior: "auto",
+          behavior: "smooth",
           block: "start",
         });
       });
