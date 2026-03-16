@@ -101,7 +101,7 @@
 }
 
 @utility definition-kicker {
-  @apply text-muted-foreground text-[0.7rem] font-semibold tracking-[0.2em] uppercase;
+  @apply text-muted-foreground pl-[0.18em] text-[0.7rem] font-semibold tracking-[0.2em] uppercase;
 }
 
 @utility definition-line {
