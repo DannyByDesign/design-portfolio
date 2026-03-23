@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, Github, Menu } from "lucide-react";
+import { ArrowUpRight, Figma, Github, Menu, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "contact";
 
-const sectionIds: PortfolioSection[] = ["home", "industrial-design", "design-engineering", "contact"];
+const sectionIds: PortfolioSection[] = ["home", "design-engineering", "industrial-design", "contact"];
 
 const routeBySection: Record<PortfolioSection, string> = {
   home: "/",
@@ -56,8 +56,8 @@ type HeaderProps = {
 function Header({ activeSection, onNavigateSection }: HeaderProps) {
   const navItems: Array<{ section: PortfolioSection; label: string }> = [
     { section: "home", label: "Home" },
-    { section: "industrial-design", label: "Industrial Design" },
     { section: "design-engineering", label: "Design Engineering" },
+    { section: "industrial-design", label: "Industrial Design" },
     { section: "contact", label: "Contact" },
   ];
 
@@ -241,17 +241,17 @@ function IndustrialDesignSection({
         physical experiences
       </motion.p>
       <motion.h2
-        className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
+        className="mt-2.5 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={introVariants}
       >
         Industrial Design
       </motion.h2>
       <motion.p
-        className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
+        className="mt-0.5 max-w-[50ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[58ch]"
         variants={introVariants}
       >
-        I design both concept explorations and production-ready products, from early form studies
-        to manufacturing handoff.
+        I design physical products from early concept development through refined form, function,
+        and production-ready outcomes.
       </motion.p>
 
       <motion.div
@@ -268,20 +268,78 @@ function IndustrialDesignSection({
   );
 }
 
-function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMotion: boolean | null }) {
+function DesignEngineeringSection({
+  prefersReducedMotion,
+  sectionRef,
+}: {
+  prefersReducedMotion: boolean | null;
+  sectionRef?: RefObject<HTMLElement | null>;
+}) {
   const reducedMotion = prefersReducedMotion ?? false;
+  const [isMobile, setIsMobile] = useState(false);
   const [activeActionCardId, setActiveActionCardId] = useState<string | null>(null);
   const [activeActionKey, setActiveActionKey] = useState<string | null>(null);
 
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(media.matches);
+    update();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", update);
+      return () => media.removeEventListener("change", update);
+    }
+
+    media.addListener(update);
+    return () => media.removeListener(update);
+  }, []);
+
   const renderDesignEngineeringCard = (project: DesignEngineeringProject, mobile: boolean) => {
-    const hasExternalLink = Boolean(project.externalHref);
-    const hasGithubLink = Boolean(project.githubHref);
-    const hasAnyAction = hasExternalLink || hasGithubLink;
+    const cardHref = project.externalHref ?? project.href;
+    const opensExternalCard = Boolean(project.externalHref);
+    const actionHrefs = {
+      external: project.externalHref,
+      github: project.githubHref,
+      figma: project.figmaHref,
+    } as const;
+    const orderedActions = (project.actionOrder ?? ["external", "github", "figma"])
+      .map((actionKey) => {
+        const href = actionHrefs[actionKey];
+
+        if (!href) {
+          return null;
+        }
+
+        const actionMeta: Record<
+          "external" | "github" | "figma",
+          { label: string; Icon: LucideIcon; ariaLabel: string }
+        > = {
+          external: {
+            label: "Website",
+            Icon: ArrowUpRight,
+            ariaLabel: `Open website for ${project.title}`,
+          },
+          github: {
+            label: "GitHub",
+            Icon: Github,
+            ariaLabel: `Open GitHub repository for ${project.title}`,
+          },
+          figma: {
+            label: "Figma",
+            Icon: Figma,
+            ariaLabel: `Open Figma file for ${project.title}`,
+          },
+        };
+
+        return {
+          key: actionKey,
+          href,
+          ...actionMeta[actionKey],
+        };
+      })
+      .filter((action): action is NonNullable<typeof action> => action !== null);
+    const hasAnyAction = orderedActions.length > 0;
     const isActionActive = activeActionCardId === project.slug;
-    const externalActionKey = `${project.slug}:external`;
-    const githubActionKey = `${project.slug}:github`;
-    const isExternalActive = activeActionKey === externalActionKey;
-    const isGithubActive = activeActionKey === githubActionKey;
 
     return (
       <article
@@ -291,8 +349,12 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
         )}
       >
         <ProjectRouteLink
-          href={project.href}
-          aria-label={`Open ${project.title} project`}
+          href={cardHref}
+          target={opensExternalCard ? "_blank" : undefined}
+          rel={opensExternalCard ? "noreferrer" : undefined}
+          aria-label={
+            opensExternalCard ? `Open live site for ${project.title}` : `Open ${project.title} project`
+          }
           className="absolute inset-0 z-10 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-2"
         />
         <div
@@ -307,14 +369,14 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
             fill
             sizes="(min-width: 768px) 48vw, 256px"
             className={cn(
-              "object-contain p-6 md:transition-transform md:duration-700 md:ease-[cubic-bezier(0.16,1,0.3,1)] md:p-7",
-              !mobile && !isActionActive && "md:group-hover:scale-[1.06]",
+              "object-contain p-6 md:transition-transform md:duration-900 md:ease-[cubic-bezier(0.16,1,0.3,1)] md:p-7",
+              !mobile && !isActionActive && "md:group-hover:scale-[1.14]",
             )}
           />
           <div className="absolute inset-0 bg-stone-600/7" />
         </div>
 
-        <div className="relative grid h-[106px] grid-cols-[60%_40%] items-start px-3 pt-4 pb-2 md:h-[120px] md:px-3.5 md:pt-4.5 md:pb-2.5">
+        <div className="relative grid h-[106px] grid-cols-[minmax(0,1fr)_auto] items-start gap-3 px-3 pt-4 pb-2 md:h-[120px] md:px-3.5 md:pt-4.5 md:pb-2.5">
           <div className="min-w-0 self-start">
             <p className="text-[14px] leading-[1.18] font-semibold tracking-[-0.008em] text-stone-600/88 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden md:text-[16px]">
               {project.title}
@@ -343,75 +405,48 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
                 }
               }}
             >
-              {hasExternalLink ? (
-                <Link
-                  href={project.externalHref as string}
-                  target="_blank"
-                  rel="noreferrer"
-                  data-action-link="true"
-                  className={cn(
-                    "relative inline-flex h-9 w-9 items-center justify-center p-1 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-1",
-                    isExternalActive
-                      ? "rounded-full bg-stone-500/20 text-stone-600/78"
-                      : "rounded-full bg-transparent text-stone-600/68",
-                    "active:rounded-full active:bg-stone-500/40 active:text-stone-600/85",
-                  )}
-                  aria-label={`Open external project link for ${project.title}`}
-                  onPointerEnter={() => {
-                    setActiveActionCardId(project.slug);
-                    setActiveActionKey(externalActionKey);
-                  }}
-                  onPointerLeave={() =>
-                    setActiveActionKey((current) => (current === externalActionKey ? null : current))
-                  }
-                  onFocus={() => {
-                    setActiveActionCardId(project.slug);
-                    setActiveActionKey(externalActionKey);
-                  }}
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  <ArrowUpRight
-                    className="relative z-10 size-5"
-                    aria-hidden="true"
-                  />
-                </Link>
-              ) : null}
-              {hasGithubLink ? (
-                <Link
-                  href={project.githubHref as string}
-                  target="_blank"
-                  rel="noreferrer"
-                  data-action-link="true"
-                  className={cn(
-                    "relative inline-flex h-9 w-9 items-center justify-center p-1 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-1",
-                    isGithubActive
-                      ? "rounded-full bg-stone-500/20 text-stone-600/78"
-                      : "rounded-full bg-transparent text-stone-600/68",
-                    "active:rounded-full active:bg-stone-500/40 active:text-stone-600/85",
-                  )}
-                  aria-label={`Open GitHub repository for ${project.title}`}
-                  onPointerEnter={() => {
-                    setActiveActionCardId(project.slug);
-                    setActiveActionKey(githubActionKey);
-                  }}
-                  onPointerLeave={() =>
-                    setActiveActionKey((current) => (current === githubActionKey ? null : current))
-                  }
-                  onFocus={() => {
-                    setActiveActionCardId(project.slug);
-                    setActiveActionKey(githubActionKey);
-                  }}
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  <Github
-                    className="relative z-10 size-5"
-                    aria-hidden="true"
-                  />
-                </Link>
-              ) : null}
+              <div className="flex flex-wrap items-center justify-end gap-1.5">
+                {orderedActions.map((action) => {
+                  const actionStateKey = `${project.slug}:${action.key}`;
+                  const isActionHighlighted = activeActionKey === actionStateKey;
+
+                  return (
+                    <Link
+                      key={action.key}
+                      href={action.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-action-link="true"
+                      className={cn(
+                        "relative inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[11px] font-medium tracking-[0.01em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-600/30 focus-visible:ring-offset-1 md:h-9 md:px-3",
+                        isActionHighlighted
+                          ? "border-stone-600/18 bg-stone-500/14 text-stone-600/82"
+                          : "border-stone-600/10 bg-white text-stone-600/70",
+                        "active:border-stone-600/20 active:bg-stone-500/18 active:text-stone-600/85",
+                      )}
+                      aria-label={action.ariaLabel}
+                      onPointerEnter={() => {
+                        setActiveActionCardId(project.slug);
+                        setActiveActionKey(actionStateKey);
+                      }}
+                      onPointerLeave={() =>
+                        setActiveActionKey((current) => (current === actionStateKey ? null : current))
+                      }
+                      onFocus={() => {
+                        setActiveActionCardId(project.slug);
+                        setActiveActionKey(actionStateKey);
+                      }}
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <action.Icon className="size-3.5" aria-hidden="true" />
+                      <span>{action.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           ) : (
-            <div className="h-full" aria-hidden="true" />
+            <div className="h-full w-[124px] md:w-[148px]" aria-hidden="true" />
           )}
         </div>
 
@@ -452,36 +487,41 @@ function DesignEngineeringSection({ prefersReducedMotion }: { prefersReducedMoti
     },
   };
 
+  const sectionViewport = isMobile
+    ? { once: true, amount: 0.02 as const, margin: "0px 0px -8% 0px" }
+    : { once: true, amount: 0.24 as const };
+
   return (
     <motion.section
+      ref={sectionRef}
       id="design-engineering"
       className="scroll-mt-20 pt-10 md:pt-14"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.24 }}
+      viewport={sectionViewport}
     >
       <motion.p className="definition-kicker" variants={introVariants}>
-        AI-enabled problem solving
+        digital native
       </motion.p>
       <motion.h2
-        className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
+        className="mt-2.5 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={introVariants}
       >
         Design Engineering
       </motion.h2>
       <motion.p
-        className="mt-4 max-w-[42ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[46ch]"
+        className="mt-0.5 max-w-[50ch] px-1 py-1 text-[16px] leading-[1.58] text-stone-600/55 md:max-w-[58ch]"
         variants={introVariants}
       >
-        I build tools and applications with AI to remove friction from my workflow and accelerate
-        real-world problem solving.
+        I&apos;m a designer who moves comfortably between design and code, building digital
+        experiences from the first concept through the final interaction details.
       </motion.p>
 
       <motion.div className="mt-10 w-full md:mt-12" variants={cardGridVariants}>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
           {designEngineeringProjects.map((project) => (
             <motion.div key={project.slug} className="md:justify-self-stretch" variants={cardItemVariants}>
-              {renderDesignEngineeringCard(project, false)}
+              {renderDesignEngineeringCard(project, isMobile)}
             </motion.div>
           ))}
         </div>
@@ -524,12 +564,12 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
         contact
       </motion.p>
       <motion.h2
-        className="mt-2 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
+        className="mt-2.5 text-[2rem] leading-[1.12] font-[560] tracking-[-0.02em] md:text-[2.65rem]"
         variants={itemVariants}
       >
         Let&apos;s Build Something Meaningful.
       </motion.h2>
-      <motion.p className="mt-4 max-w-[64ch] text-[1.05rem] leading-[1.62] text-stone-600/65" variants={itemVariants}>
+      <motion.p className="mt-0.5 max-w-[64ch] text-[1.05rem] leading-[1.62] text-stone-600/65" variants={itemVariants}>
         I&apos;m open to internships, full-time roles, and collaborative projects across industrial
         design and product engineering.
       </motion.p>
@@ -544,7 +584,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
 export function PortfolioPage() {
   const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
-  const industrialSectionRef = useRef<HTMLElement | null>(null);
+  const designEngineeringSectionRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const programmaticTimerRef = useRef<number | null>(null);
   const activeSectionRef = useRef<PortfolioSection>("home");
@@ -554,7 +594,7 @@ export function PortfolioPage() {
   const { scrollY } = useScroll();
   // Shared choreography timeline:
   // - flatten starts immediately at scrollY=0
-  // - flatten reaches 1 near industrial section handoff
+  // - flatten reaches 1 near the first portfolio section handoff
   const heroFlattenProgress = useTransform(scrollY, [0, handoffScrollY], [0, 1]);
   const [activeSection, setActiveSection] = useState<PortfolioSection>(() =>
     sectionFromPath(pathname ?? "/"),
@@ -562,14 +602,14 @@ export function PortfolioPage() {
 
   useEffect(() => {
     const measureHandoffTiming = () => {
-      const industrialSection = industrialSectionRef.current;
-      if (!industrialSection) {
+      const firstSection = designEngineeringSectionRef.current;
+      if (!firstSection) {
         return;
       }
 
-      const industrialTop = industrialSection.getBoundingClientRect().top + window.scrollY;
-      // Match the previous industrial reveal anchor: section top reaching ~52% viewport height.
-      const nextHandoff = Math.max(1, industrialTop - window.innerHeight * 0.52);
+      const firstSectionTop = firstSection.getBoundingClientRect().top + window.scrollY;
+      // Match the previous reveal anchor: section top reaching ~52% viewport height.
+      const nextHandoff = Math.max(1, firstSectionTop - window.innerHeight * 0.52);
       setHandoffScrollY(nextHandoff);
     };
 
@@ -754,11 +794,11 @@ export function PortfolioPage() {
           prefersReducedMotion={prefersReducedMotion}
           flattenProgress={heroFlattenProgress}
         />
-        <IndustrialDesignSection
+        <DesignEngineeringSection
           prefersReducedMotion={prefersReducedMotion}
-          sectionRef={industrialSectionRef}
+          sectionRef={designEngineeringSectionRef}
         />
-        <DesignEngineeringSection prefersReducedMotion={prefersReducedMotion} />
+        <IndustrialDesignSection prefersReducedMotion={prefersReducedMotion} />
 
         <ContactSection prefersReducedMotion={prefersReducedMotion} />
       </main>

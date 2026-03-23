@@ -1,0 +1,211 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e8]:
+    - link "Catalon home" [ref=e10] [cursor=pointer]:
+      - /url: /
+      - img "Catalon logo" [ref=e11]
+      - generic [ref=e12]: Catalon
+    - link "Request Demo" [ref=e14] [cursor=pointer]:
+      - /url: /contact/
+      - generic [ref=e16]: Request Demo
+      - generic [ref=e17]:
+        - img
+  - main [ref=e18]:
+    - generic [ref=e20]:
+      - generic [ref=e23]:
+        - generic [ref=e24]: AI For Chemical Manufacturers & Distributors
+        - heading "Automate your purchase orders with AI in seconds, not hours" [level=1] [ref=e27]:
+          - text: Automate your
+          - generic [ref=e29]: purchase orders
+          - text: with AI in seconds, not hours
+        - paragraph [ref=e30]: Catalon delivers end-to-end workflow automation across quoting, logistics, compliance, and sourcing, freeing chemical teams from repetitive admin work.
+      - link "Request Demo" [ref=e32] [cursor=pointer]:
+        - /url: /contact/
+        - generic [ref=e33]: Request Demo
+        - img
+    - generic [ref=e38]:
+      - generic [ref=e39]:
+        - generic [ref=e40]: "01"
+        - generic [ref=e41]:
+          - heading "Less Manual Work" [level=3] [ref=e42]
+          - paragraph [ref=e43]: AI handles the busywork—reading requests, moving data, and drafting responses—so your team can focus on execution.
+      - generic [ref=e44]:
+        - generic [ref=e45]: "02"
+        - generic [ref=e46]:
+          - heading "Handles Any Format" [level=3] [ref=e47]
+          - paragraph [ref=e48]: POs come in any format, but our AI only extracts the correct information, so you only review a ready-to-send draft.
+      - generic [ref=e49]:
+        - generic [ref=e50]: "03"
+        - generic [ref=e51]:
+          - heading "Works From Day 1" [level=3] [ref=e52]
+          - paragraph [ref=e53]: Runs on your live ERP customers, products, pricing, and ship-to data. No rebuilding lists or long integration cycles.
+    - generic [ref=e54]:
+      - generic [ref=e55]:
+        - heading "The AI Engine For Chemical Commercial Teams" [level=2] [ref=e56]
+        - paragraph [ref=e57]: Works with your existing workflows, high-accuracy outputs with auditability and safeguards
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e67]:
+            - generic [ref=e69]:
+              - img [ref=e71]
+              - generic [ref=e78]:
+                - generic [ref=e79]: email
+                - generic [ref=e80]: received
+            - generic [ref=e87]:
+              - img [ref=e89]
+              - generic [ref=e96]:
+                - generic [ref=e97]: content
+                - generic [ref=e98]: filtered
+            - generic [ref=e105]:
+              - img [ref=e107]
+              - generic [ref=e114]:
+                - generic [ref=e115]: order
+                - generic [ref=e116]: verified
+            - generic [ref=e123]:
+              - img [ref=e125]
+              - generic [ref=e132]:
+                - generic [ref=e133]: customer
+                - generic [ref=e134]: matched
+            - generic [ref=e141]:
+              - img [ref=e143]
+              - generic [ref=e150]:
+                - generic [ref=e151]: ERP
+                - generic [ref=e152]: connected
+            - generic [ref=e159]:
+              - img [ref=e161]
+              - generic [ref=e168]:
+                - generic [ref=e169]: PO draft
+                - generic [ref=e170]: created
+          - heading "End-to-end PO Processing" [level=3] [ref=e171]
+          - paragraph [ref=e172]: Process every purchase order in seconds, freeing your team to execute instead of copy-pasting information across scattered PDFs, spreadsheets, and legacy systems
+        - generic [ref=e173]:
+          - generic [ref=e174]:
+            - generic [ref=e179]:
+              - generic:
+                - generic:
+                  - img "ProCatalis AI"
+              - generic:
+                - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+              - generic:
+                - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+            - heading "Back Office Automation" [level=3] [ref=e180]
+            - paragraph [ref=e181]: Automate the busywork across your commercial back office
+          - generic [ref=e182]:
+            - heading "Automated Document Generation" [level=3] [ref=e196]
+            - paragraph [ref=e197]: Auto-create and update SDS/TDS/COA/BOL on demand
+    - generic [ref=e199]:
+      - paragraph [ref=e201]: Compatible With
+      - generic [ref=e203]:
+        - generic [ref=e204]:
+          - img "Salesforce" [ref=e206]
+          - img "SAP" [ref=e208]
+          - img "Oracle" [ref=e210]
+          - img "Microsoft Excel" [ref=e212]
+          - img "Microsoft Outlook" [ref=e214]
+          - img "NetSuite" [ref=e216]
+          - img "Dynamics 365" [ref=e218]
+          - img "Sage" [ref=e220]
+          - img "Datacor" [ref=e222]
+        - generic [ref=e223]:
+          - img "Salesforce" [ref=e225]
+          - img "SAP" [ref=e227]
+          - img "Oracle" [ref=e229]
+          - img "Microsoft Excel" [ref=e231]
+          - img "Microsoft Outlook" [ref=e233]
+          - img "NetSuite" [ref=e235]
+          - img "Dynamics 365" [ref=e237]
+          - img "Sage" [ref=e239]
+          - img "Datacor" [ref=e241]
+    - generic [ref=e243]:
+      - generic [ref=e244]:
+        - heading "AI Operating 24/7 In The Background" [level=2] [ref=e245]
+        - paragraph [ref=e246]: Requests get handled continuously, so you process more volume, faster, without adding headcount.
+      - generic [ref=e248]:
+        - generic [ref=e249]:
+          - generic [ref=e250]:
+            - generic [ref=e257]:
+              - img [ref=e259]
+              - generic [ref=e262]:
+                - paragraph [ref=e263]: Inbound Requests
+                - paragraph [ref=e264]: POs, samples, emails
+            - generic [ref=e271]:
+              - img [ref=e273]
+              - generic [ref=e276]:
+                - paragraph [ref=e277]: Internal Documents
+                - paragraph [ref=e278]: PDFs, scans, Excel
+            - generic [ref=e285]:
+              - img [ref=e287]
+              - generic [ref=e291]:
+                - paragraph [ref=e292]: Live ERP Context
+                - paragraph [ref=e293]: Items, customers, pricing
+          - generic [ref=e295]:
+            - img "Catalon" [ref=e297]
+            - generic [ref=e298]:
+              - paragraph [ref=e299]: AI Automation Layer
+              - paragraph [ref=e300]: extracts → validates → drafts
+          - generic [ref=e302]:
+            - generic [ref=e309]:
+              - img [ref=e311]
+              - generic [ref=e313]:
+                - paragraph [ref=e314]: Faster Throughput
+                - paragraph [ref=e315]: More orders, same team
+            - generic [ref=e322]:
+              - img [ref=e324]
+              - generic [ref=e327]:
+                - paragraph [ref=e328]: Shorter Cycle Time
+                - paragraph [ref=e329]: Request to draft, fast
+            - generic [ref=e336]:
+              - img [ref=e338]
+              - generic [ref=e341]:
+                - paragraph [ref=e342]: Errors Prevented
+                - paragraph [ref=e343]: Catches issues early
+        - img
+      - generic [ref=e344]:
+        - generic [ref=e347]: Live Today
+        - paragraph [ref=e348]:
+          - text: Catalon is already working with leading chemical companies, delivering
+          - text: measurable time savings without ripping out existing systems.
+    - generic [ref=e350]:
+      - generic [ref=e351]:
+        - heading "Founders" [level=2] [ref=e352]
+        - paragraph [ref=e353]: Our team brings experience from top universities and industry leaders
+      - generic [ref=e355]:
+        - generic [ref=e356]:
+          - img "University of Edinburgh" [ref=e358]
+          - img "University of Oxford" [ref=e360]
+          - img "Imperial College London" [ref=e362]
+          - img "UC Berkeley" [ref=e364]
+          - img "Yale University" [ref=e366]
+          - img "Tesla" [ref=e368]
+        - generic [ref=e369]:
+          - img "University of Edinburgh" [ref=e371]
+          - img "University of Oxford" [ref=e373]
+          - img "Imperial College London" [ref=e375]
+          - img "UC Berkeley" [ref=e377]
+          - img "Yale University" [ref=e379]
+          - img "Tesla" [ref=e381]
+    - generic [ref=e394]:
+      - heading "Ready to free your commercial team?" [level=2] [ref=e395]
+      - paragraph [ref=e396]: Let automation handle the backend while your commercial reps focus on prospecting, customer visits, and closing deals—the activities that actually generate revenue.
+      - link "Request Demo" [ref=e398] [cursor=pointer]:
+        - /url: /contact/
+        - generic [ref=e399]: Request Demo
+        - img
+  - alert [ref=e400]

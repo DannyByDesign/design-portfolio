@@ -1,0 +1,19 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - button "Go to home page" [ref=e3]
+    - region "Orb scene" [ref=e7]
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - heading "What Is the Final Form of Voice AI?" [level=1]:
+                  - generic: What Is the Final
+                  - generic: Form of Voice AI?
+                - paragraph:
+                  - generic: What if our interface were not purely functional, but also whimsical,
+                  - generic: boldly colored, and dynamic enough to adapt to every interaction?
+              - button "Swipe to enter scene" [ref=e12]:
+                - generic: SLIDE TO ENTER SCENE
+  - alert [ref=e16]

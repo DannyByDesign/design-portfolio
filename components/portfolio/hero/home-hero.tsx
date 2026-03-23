@@ -20,7 +20,16 @@ const HERO_DEFINITION_PARAGRAPHS = [
   "They know when to respect limits, and when to push beyond boundaries in service of the end user.",
 ];
 
-const HERO_SOCIAL_LABELS = ["LinkedIn", "Twitter/X", "Instagram"];
+const HERO_SOCIAL_COLUMNS = [
+  {
+    id: "social",
+    items: ["Twitter/X", "Instagram"],
+  },
+  {
+    id: "profile",
+    items: ["LinkedIn", "Resume"],
+  },
+];
 const HERO_AXIS_LABEL_COLOR = "rgb(87 83 78 / 0.42)";
 const HERO_INITIAL_ROTATE_Y = 21;
 const HERO_INITIAL_PERSPECTIVE = 1050;
@@ -235,11 +244,15 @@ export function HomeHero({ prefersReducedMotion, flattenProgress }: HomeHeroProp
               <p className="hero-rail-name">Wang</p>
             </div>
 
-            <div className="hero-social-stack mt-9 space-y-1.5">
-              {HERO_SOCIAL_LABELS.map((label) => (
-                <p key={label} className="hero-social-link">
-                  {label}
-                </p>
+            <div className="mt-9 grid grid-cols-2 gap-x-10 lg:gap-x-14">
+              {HERO_SOCIAL_COLUMNS.map((column) => (
+                <div key={column.id} className="space-y-1.5">
+                  {column.items.map((label) => (
+                    <p key={label} className="hero-social-link">
+                      {label}
+                    </p>
+                  ))}
+                </div>
               ))}
             </div>
           </aside>

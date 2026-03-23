@@ -16,8 +16,8 @@ type PortfolioSection = "home" | "industrial-design" | "design-engineering" | "c
 
 const navItems: Array<{ section: PortfolioSection; label: string; href: string }> = [
   { section: "home", label: "Home", href: "/" },
-  { section: "industrial-design", label: "Industrial Design", href: "/industrial-design" },
   { section: "design-engineering", label: "Design Engineering", href: "/design-engineering" },
+  { section: "industrial-design", label: "Industrial Design", href: "/industrial-design" },
   { section: "contact", label: "Contact", href: "/contact" },
 ];
 

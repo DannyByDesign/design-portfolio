@@ -1,0 +1,136 @@
+- generic [active] [ref=e1]:
+  - main [ref=e4]:
+    - generic [ref=e5]:
+      - navigation [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Kiku logo Kiku" [ref=e9] [cursor=pointer]:
+              - /url: "#hero"
+              - generic [ref=e10]:
+                - img "Kiku logo" [ref=e11]
+                - generic [ref=e12]: Kiku
+          - generic [ref=e13]:
+            - listitem [ref=e14]:
+              - link "Products" [ref=e15] [cursor=pointer]:
+                - /url: "#products"
+            - listitem [ref=e16]:
+              - link "FAQ" [ref=e17] [cursor=pointer]:
+                - /url: "#faq"
+            - listitem [ref=e18]:
+              - link "Mission" [ref=e19] [cursor=pointer]:
+                - /url: "#mission"
+            - listitem [ref=e20]:
+              - link "Pre-order" [ref=e21] [cursor=pointer]:
+                - /url: /pre-order
+      - link "Contact Sales" [ref=e22] [cursor=pointer]:
+        - /url: /contact
+    - generic [ref=e23]:
+      - img "Kiku greenhouse hero backdrop" [ref=e24]
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - heading "Advancing Horticulture for the Age of Automation" [level=1] [ref=e28]:
+            - text: Advancing Horticulture
+            - text: for the Age of Automation
+          - paragraph [ref=e29]: We turn plant science into AI-powered pathology software and hardware automation systems, so growers can improve yield and consistency without overbuilt robotics or human guesswork.
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e33]: AI Pathology Correction
+            - generic [ref=e35]: Continuously monitor plant health to detect and address issues proactively.
+          - generic [ref=e36]:
+            - generic [ref=e38]: Plant Profile Database
+            - generic [ref=e40]: Crop run on real data from controlled growth experiments, defining optimal grow conditions.
+        - link "Contact Sales" [ref=e41] [cursor=pointer]:
+          - /url: /contact
+    - generic [ref=e42]:
+      - generic [ref=e46]:
+        - heading "Products" [level=2] [ref=e48]
+        - generic [ref=e49]:
+          - article [ref=e50]:
+            - img "Farmhand product image" [ref=e53]
+            - generic [ref=e55]:
+              - heading "Farmhand" [level=3] [ref=e56]
+              - paragraph [ref=e57]: A smart farm controller with plant profiles and AI pathology support for growers, hobbyists, and research environments.
+              - button "Pre-Order Now" [ref=e58]
+          - article [ref=e59]:
+            - img "Plant Isolation Chamber product image" [ref=e62]
+            - generic [ref=e64]:
+              - heading "Plant Isolation Chamber" [level=3] [ref=e65]
+              - paragraph [ref=e66]: An affordable controlled-environment chamber built for block experiments, hydroponic trials, and other precise biology workflows.
+              - button "Pre-Order Now" [ref=e67]
+          - article [ref=e68]:
+            - img "Nutrient Mixer product image" [ref=e71]
+            - generic [ref=e73]:
+              - heading "Nutrient Mixer" [level=3] [ref=e74]
+              - paragraph [ref=e75]: A custom-ratio fertilizer mixer for irrigation and hydroponics that automates precise macro, micro, and trace dosing.
+              - button "Pre-Order Now" [ref=e76]
+      - generic [ref=e78]:
+        - heading "FAQ" [level=2] [ref=e80]
+        - generic [ref=e82]:
+          - button "Which product is available right now?" [ref=e84]:
+            - generic [ref=e85]: Which product is available right now?
+            - img [ref=e86]
+          - button "How do pre-orders work?" [ref=e89]:
+            - generic [ref=e90]: How do pre-orders work?
+            - img [ref=e91]
+          - button "Which products are currently pre-order only?" [ref=e94]:
+            - generic [ref=e95]: Which products are currently pre-order only?
+            - img [ref=e96]
+          - button "When are pre-orders expected to ship?" [ref=e99]:
+            - generic [ref=e100]: When are pre-orders expected to ship?
+            - img [ref=e101]
+          - button "What does Farmhand actually do?" [ref=e104]:
+            - generic [ref=e105]: What does Farmhand actually do?
+            - img [ref=e106]
+          - button "Who is Farmhand built for?" [ref=e109]:
+            - generic [ref=e110]: Who is Farmhand built for?
+            - img [ref=e111]
+          - button "What makes the Nutrient Mixer different?" [ref=e114]:
+            - generic [ref=e115]: What makes the Nutrient Mixer different?
+            - img [ref=e116]
+          - button "What is the Plant Isolation Chamber for?" [ref=e119]:
+            - generic [ref=e120]: What is the Plant Isolation Chamber for?
+            - img [ref=e121]
+          - button "Why do these products work well together?" [ref=e124]:
+            - generic [ref=e125]: Why do these products work well together?
+            - img [ref=e126]
+      - generic [ref=e129]:
+        - heading "Mission" [level=2] [ref=e131]
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - generic [ref=e135]:
+              - generic [ref=e136]: Founder's Thesis
+              - generic [ref=e137]: Old + New
+            - generic [ref=e138]:
+              - paragraph [ref=e139]: Agriculture does not need to become fully autonomous to become far more humane, efficient, and resilient.
+              - generic [ref=e140]:
+                - paragraph [ref=e141]: The point is not to remove growers from the equation. It is to reduce the tedious work, protect crop margins, and make advanced control systems useful outside a narrow class of overcapitalized farms.
+                - paragraph [ref=e142]: “The future of agriculture is a mixture of old and new.”
+          - generic [ref=e143]:
+            - generic [ref=e144]:
+              - article [ref=e145]:
+                - generic [ref=e146]: Labor Logic
+                - generic [ref=e147]:
+                  - heading "Automation should remove the most tedious work, not the people who know how to grow." [level=3] [ref=e148]
+                  - generic [ref=e149]:
+                    - paragraph [ref=e150]: "Kiku is a response to a decade of overbuilt agricultural tech: expensive robotics, heavy maintenance, and systems designed by engineers instead of farmers."
+                    - paragraph [ref=e151]: The alternative is simpler. Automate nutrient mixing, watering, and climate control, then leave the harder decisions to growers.
+              - article [ref=e152]:
+                - generic [ref=e153]: Field Memory
+                - generic [ref=e154]:
+                  - heading "The system carries knowledge forward so growers do not have to relearn every hard lesson alone." [level=3] [ref=e155]
+                  - generic [ref=e156]:
+                    - paragraph [ref=e157]: Plant profiles, environmental controls, and pathology tools turn hard-won growing knowledge into something practical for beginners, researchers, and commercial teams.
+                    - paragraph [ref=e158]: That logic extends beyond hydroponics, fitting conventional irrigation, gardens, regenerative farms, hoop houses, greenhouses, and controlled environments alike.
+            - complementary [ref=e159]:
+              - generic [ref=e160]: Margin Notes
+              - generic [ref=e161]:
+                - generic [ref=e162]:
+                  - generic [ref=e163]: Vol. 01
+                  - paragraph [ref=e164]: "A founder's premise: the future of agriculture is a mixture of old and new, and useful tools should respect both the grower and the economics of the field."
+                - generic [ref=e165]:
+                  - generic [ref=e166]: Vol. 02
+                  - paragraph [ref=e167]: The low-hanging fruit matters most. If repetitive mixing, dosing, and environmental control can be automated well, farms can run with smaller teams and more consistent labor.
+                - generic [ref=e168]:
+                  - generic [ref=e169]: Vol. 03
+                  - paragraph [ref=e170]: "Every product points to the same ambition: keep margins intact, make precision more accessible, and build systems that farmers can actually afford to trust."
+  - alert [ref=e171]
