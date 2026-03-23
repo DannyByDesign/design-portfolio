@@ -574,7 +574,7 @@ function ContactSection({ prefersReducedMotion }: { prefersReducedMotion: boolea
         design and product engineering.
       </motion.p>
       <motion.p className="mt-5 text-[0.95rem] text-stone-600/70" variants={itemVariants}>
-        Email: dannywang.design@gmail.com
+        Email: info.dannybydesign@gmail.com
       </motion.p>
       <motion.div className="mt-8 h-px w-full bg-stone-600/8" variants={itemVariants} />
     </motion.section>
